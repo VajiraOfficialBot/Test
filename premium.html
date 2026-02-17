@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Activation | FLEXA-HUB</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0b141a;
+            --card-bg: #202c33;
+            --accent: #00f2ff;
+            --premium-gold: #ff9d00;
+            --success: #25d366;
+            --text: #e9edef;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text);
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .premium-container {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .crown-icon { font-size: 50px; color: var(--premium-gold); margin-bottom: 20px; }
+        h2 { font-family: 'Orbitron', sans-serif; letter-spacing: 2px; margin-bottom: 20px; }
+        .input-group { margin-top: 25px; }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            background: #111b21;
+            border: 1px solid #3b4a54;
+            border-radius: 12px;
+            color: white;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .btn-premium {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .req-btn { background: var(--accent); color: black; }
+        .act-btn { background: var(--success); color: white; }
+        .btn-premium:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        /* Fixed: Using display none directly instead of a class */
+        #activate-view { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="premium-container">
+    <div class="crown-icon"><i class="fas fa-crown"></i></div>
+    <h2>PREMIUM ACCESS</h2>
+
+    <div id="request-view">
+        <p style="color: #8696a0; font-size: 14px;">Enter your number to receive an activation token.</p>
+        <div class="input-group">
+            <input type="tel" id="user-number" placeholder="Enter Number (e.g. 947...)" />
+            <button onclick="requestToken()" id="reqBtn" class="btn-premium req-btn">
+                <span>REQUEST TOKEN</span> <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <div id="activate-view">
+        <p style="color: var(--premium-gold); font-size: 13px; margin-bottom: 15px;">
+            <i class="fas fa-info-circle"></i> Token sent to Admin! Check with 94776309987
+        </p>
+        <div class="input-group">
+            <input type="text" id="prem-token" placeholder="Enter 6-Digit Code" maxlength="6" />
+            <button onclick="activatePremium()" id="actBtn" class="btn-premium act-btn">
+                <span>ACTIVATE NOW</span> <i class="fas fa-bolt"></i>
+            </button>
+        </div>
+    </div>
+
+    <a href="index.html" style="margin-top: 20px; display: block; color: var(--accent); text-decoration: none; font-size: 14px;">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+    </a>
+</div>
+
+<script>
+    let targetUserNumber = ""; 
+
+    async function requestToken() {
+        const numInput = document.getElementById('user-number').value.trim();
+        if (!numInput) return alert("Please enter your number!");
+        
+        targetUserNumber = numInput.replace(/\D/g, ''); 
+        const btn = document.getElementById('reqBtn');
+        btn.innerHTML = '<span>SENDING...</span> <i class="fas fa-spinner fa-spin"></i>';
+        btn.disabled = true;
+
+        try {
+            const res = await fetch('/api/request-premium', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ number: targetUserNumber })
+            });
+            const data = await res.json();
+            
+            if(data.success) {
+                // HIDE Step 1, SHOW Step 2
+                document.getElementById('request-view').style.display = 'none';
+                document.getElementById('activate-view').style.display = 'block';
+            } else {
+                alert("Error: " + (data.error || "Failed to send token"));
+                btn.innerHTML = '<span>REQUEST TOKEN</span> <i class="fas fa-paper-plane"></i>';
+                btn.disabled = false;
+            }
+        } catch (err) {
+            alert("Server connection failed.");
+            btn.disabled = false;
+        }
+    }
+
+    async function activatePremium() {
+        const tokenInput = document.getElementById('prem-token').value.trim();
+        if (!tokenInput) return alert("Please enter the token!");
+
+        const btn = document.getElementById('actBtn');
+        btn.innerHTML = '<span>VERIFYING...</span> <i class="fas fa-spinner fa-spin"></i>';
+
+        try {
+            const res = await fetch('/api/activate-premium', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ 
+                    number: targetUserNumber,
+                    token: tokenInput 
+                })
+            });
+            const data = await res.json();
+            
+            if(data.success) {
+                alert("✨ Congratulations! Premium Activated.");
+                window.location.href = "index.html";
+            } else {
+                alert("❌ Invalid Token. Check with Admin.");
+                btn.innerHTML = '<span>ACTIVATE NOW</span> <i class="fas fa-bolt"></i>';
+            }
+        } catch (err) {
+            alert("Activation error.");
+        }
+    }
+</script>
+</body>
+</html>
