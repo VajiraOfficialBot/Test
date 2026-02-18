@@ -206,26 +206,66 @@
 
     
 
-  <div class="console-3d-card">
-    <div class="active-stats-grid">
-      <div class="stat-focus">
-        <span class="val" id="realTimeActive">0</span>
-        <span class="lbl">Active Users</span>
-      </div>
-      <div class="stat-focus">
-        <span class="val" id="realTimeTotal">0</span>
-        <span class="lbl">Total Nodes</span>
-      </div>
-    </div>
+  <div class="real-time-monitor">
+    <style>
+        .real-time-monitor {
+            max-width: 400px;
+            margin: 20px auto;
+            perspective: 1000px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .monitor-box {
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid rgba(34, 211, 238, 0.3);
+            border-radius: 20px;
+            padding: 15px;
+            transform: rotateX(8deg);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+        .monitor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 10px;
+            color: #22d3ee;
+            border-bottom: 1px solid rgba(34,211,238,0.1);
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+        }
+        .live-count-badge {
+            background: rgba(34, 211, 238, 0.1);
+            padding: 2px 8px;
+            border-radius: 5px;
+            border: 1px solid #22d3ee;
+        }
+        #terminalLog {
+            height: 90px;
+            overflow: hidden;
+            font-size: 11px;
+            color: #94a3b8;
+            display: flex;
+            flex-direction: column-reverse;
+        }
+        .log-line {
+            padding: 2px 0;
+            animation: fadeInLog 0.3s ease;
+        }
+        .log-time { color: #475569; margin-right: 8px; }
+        .log-status { color: #10b981; margin-right: 5px; }
+        @keyframes fadeInLog { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
 
-    <div class="terminal-scroll" id="terminalStream">
-      <div class="log-item">
-        <span class="time">[SYS]</span>
-        <span class="act">Kernel established...</span>
-      </div>
+    <div class="monitor-box">
+        <div class="monitor-header">
+            <span><i class="fas fa-satellite-dish"></i> DATABASE_SYNC</span>
+            <span class="live-count-badge">ACTIVE: <span id="activeUserNum">0</span></span>
+        </div>
+        <div id="terminalLog">
+            <div class="log-line">Connecting to Supabase...</div>
+        </div>
     </div>
-  </div>
 </div>
+
 
 
     
@@ -305,50 +345,62 @@
 
 
 
-  const SUPABASE_URL = 'https://ieyiduewpwsodzcaoowe.supabase.co';
-  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlleWlkdWV3cHdzb2R6Y2Fvb3dlIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NjYyMDE3MiwiZXhwIjoyMDgyMTk2MTcyfQ.bSPeV-LIH5Ix73ZvzhSaJ_I_iOw3QiC7Fi3CXshelyU'; // Use the full key from backup.js
-  const BUCKET = 'setting';
+  
+    // Data extracted from your backup.js
+    const SB_URL = 'https://ieyiduewpwsodzcaoowe.supabase.co';
+    const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlleWlkdWV3cHdzb2R6Y2Fvb3dlIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NjYyMDE3MiwiZXhwIjoyMDgyMTk2MTcyfQ.bSPeV-LIH5Ix73ZvzhSaJ_I_iOw3QiC7Fi3CXshelyU';
+    const BUCKET = 'setting';
 
-  async function updateRealStats() {
-    try {
-      // Fetch session folders from Supabase Storage
-      const response = await fetch(`${SUPABASE_URL}/storage/v1/object/list/${BUCKET}`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${SUPABASE_KEY}`,
-          'apikey': SUPABASE_KEY,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ prefix: 'sessions/', limit: 100 })
-      });
-      
-      const folders = await response.json();
-      const realCount = folders.length || 0;
+    async function syncRealData() {
+        try {
+            // Fetching list of session files from Supabase Storage
+            const response = await fetch(`${SB_URL}/storage/v1/object/list/${BUCKET}`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${SB_KEY}`,
+                    'apikey': SB_KEY,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ prefix: '', limit: 100 })
+            });
 
-      // Update the "Users" count in your existing stat-pill
-      document.getElementById('totalUsers').innerText = realCount;
-      document.getElementById('activeSockets').innerText = Math.floor(realCount * 0.7); // Estimated active
-
-      addLog(`Detected ${realCount} sessions in Supabase`);
-    } catch (e) {
-      console.error("Fetch Error:", e);
-      addLog("Connection retry...");
+            const data = await response.json();
+            
+            if (data && Array.isArray(data)) {
+                const totalStored = data.length;
+                // Update the counter
+                document.getElementById('activeUserNum').innerText = totalStored;
+                
+                // Add a beautiful log entry
+                addLog(`Synced ${totalStored} real sessions from Supabase.`);
+            }
+        } catch (err) {
+            addLog("Sync Error: Checking connection...");
+        }
     }
-  }
 
-  function addLog(msg) {
-    const stream = document.getElementById('logStream');
-    const time = new Date().toLocaleTimeString([], {hour12:false});
-    const div = document.createElement('div');
-    div.className = 'log-entry';
-    div.innerHTML = `<span class="time">[${time}]</span> <span class="status">✓</span> ${msg}`;
-    stream.prepend(div);
-    if(stream.children.length > 4) stream.lastChild.remove();
-  }
+    function addLog(message) {
+        const logBox = document.getElementById('terminalLog');
+        const now = new Date();
+        const timestamp = now.getHours().toString().padStart(2, '0') + ":" + 
+                          now.getMinutes().toString().padStart(2, '0') + ":" + 
+                          now.getSeconds().toString().padStart(2, '0');
+        
+        const div = document.createElement('div');
+        div.className = 'log-line';
+        div.innerHTML = `<span class="log-time">[${timestamp}]</span><span class="log-status">✓</span>${message}`;
+        
+        logBox.prepend(div);
+        
+        // Keep only last 5 logs for performance
+        if (logBox.children.length > 5) {
+            logBox.lastChild.remove();
+        }
+    }
 
-  // Initial update and refresh every 10 seconds
-  updateRealStats();
-  setInterval(updateRealStats, 10000);
+    // Run sync every 10 seconds
+    syncRealData();
+    setInterval(syncRealData, 10000);
 
 
         
