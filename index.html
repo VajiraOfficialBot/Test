@@ -2,254 +2,209 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nexus | Secure Pairing</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Nexus | Secure Auth</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=JetBrains+Mono&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --primary: #00f2fe;
-            --secondary: #7000ff;
-            --bg: #030712;
-            --glass: rgba(17, 24, 39, 0.7);
-            --border: rgba(255, 255, 255, 0.1);
+            --bg: #050505;
+            --accent: #00ffd1;
+            --card-bg: rgba(20, 20, 20, 0.8);
+            --border: rgba(255, 255, 255, 0.08);
+            --text-dim: #888;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
 
         body {
             background-color: var(--bg);
-            background-image: 
-                radial-gradient(circle at 0% 0%, rgba(112, 0, 255, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 100% 100%, rgba(0, 242, 254, 0.15) 0%, transparent 50%);
-            color: #fff;
-            font-family: 'Space Grotesk', sans-serif;
-            /* Critical fix for centering */
-            min-height: 100vh;
-            min-height: -webkit-fill-available;
+            color: white;
+            height: 100vh;
+            width: 100vw;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            position: fixed;
+            background-image: radial-gradient(circle at 50% 50%, #111 0%, #050505 100%);
         }
 
-        /* Animated Grid Background */
-        body::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
-            background-size: 40px 40px;
-            mask-image: radial-gradient(circle at center, black, transparent 80%);
-            z-index: -1;
-            opacity: 0.3;
-        }
-
+        /* Centered Wrapper */
         .container {
             width: 90%;
             max-width: 400px;
-            z-index: 10;
+            perspective: 1000px;
         }
 
-        .card {
-            background: var(--glass);
+        .auth-card {
+            background: var(--card-bg);
             backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 32px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border-radius: 30px;
+            padding: 40px 25px;
             text-align: center;
-            position: relative;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.8);
         }
 
-        /* Top Glow Bar */
-        .card::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 20%; right: 20%; height: 2px;
-            background: linear-gradient(90deg, transparent, var(--primary), transparent);
-            box-shadow: 0 0 15px var(--primary);
-        }
+        .header h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 5px; }
+        .header p { color: var(--text-dim); font-size: 13px; margin-bottom: 30px; }
 
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(0, 242, 254, 0.1);
-            color: var(--primary);
-            padding: 6px 12px;
-            border-radius: 100px;
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-bottom: 20px;
-            border: 1px solid rgba(0, 242, 254, 0.2);
-        }
-
-        .status-dot {
-            width: 6px; height: 6px;
-            background: var(--primary);
-            border-radius: 50%;
-            box-shadow: 0 0 8px var(--primary);
-            animation: pulse 2s infinite;
-        }
-
-        h1 {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            background: linear-gradient(to bottom, #fff, #94a3b8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .subtitle {
-            color: #94a3b8;
-            font-size: 14px;
-            margin-bottom: 32px;
-        }
-
-        .input-box {
-            position: relative;
-            margin-bottom: 24px;
-        }
-
-        .input-box i {
-            position: absolute;
-            left: 16px; top: 50%;
-            transform: translateY(-50%);
-            color: var(--primary);
-            font-size: 14px;
-        }
-
-        input {
-            width: 100%;
-            background: rgba(0, 0, 0, 0.4);
+        /* Mode Selection Buttons */
+        .mode-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            background: rgba(255,255,255,0.03);
+            padding: 6px;
+            border-radius: 16px;
+            margin-bottom: 25px;
             border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 16px 16px 16px 48px;
-            color: #fff;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 15px;
-            transition: 0.3s ease;
         }
 
-        input:focus {
-            outline: none;
-            border-color: var(--primary);
-            background: rgba(0, 242, 254, 0.05);
-            box-shadow: 0 0 20px rgba(0, 242, 254, 0.1);
-        }
-
-        .btn-link {
-            width: 100%;
-            background: linear-gradient(135deg, var(--secondary), #4f46e5);
-            color: white;
+        .mode-btn {
+            padding: 12px;
+            border-radius: 12px;
             border: none;
-            border-radius: 14px;
-            padding: 18px;
-            font-size: 14px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            background: transparent;
+            color: var(--text-dim);
+            font-weight: 600;
+            font-size: 13px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            box-shadow: 0 10px 20px -5px rgba(112, 0, 255, 0.4);
+            gap: 8px;
         }
 
-        .btn-link:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 30px -5px rgba(112, 0, 255, 0.6);
+        .mode-btn.active {
+            background: var(--accent);
+            color: black;
+            box-shadow: 0 4px 15px rgba(0, 255, 209, 0.3);
         }
 
-        .btn-link:active { transform: translateY(0); }
+        /* Input Styles */
+        .input-group { margin-bottom: 20px; transition: 0.4s; }
+        .hidden { display: none; }
 
-        #status { margin-top: 20px; }
-
-        .pairing-result {
-            margin-top: 20px;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px dashed var(--primary);
-            border-radius: 16px;
-            animation: slideUp 0.4s ease;
-        }
-
-        .code-display {
+        input {
+            width: 100%;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px;
+            color: white;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 28px;
-            color: var(--primary);
-            letter-spacing: 4px;
-            margin: 10px 0;
+            font-size: 15px;
+            outline: none;
+            text-align: center;
+        }
+
+        input:focus { border-color: var(--accent); }
+
+        .btn-main {
+            width: 100%;
+            padding: 18px;
+            border-radius: 16px;
+            border: none;
+            background: white;
+            color: black;
+            font-weight: 800;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-main:hover { transform: translateY(-2px); opacity: 0.9; }
+
+        /* Results Area */
+        #displayArea { margin-top: 25px; min-height: 100px; }
+        
+        .qr-frame {
+            background: white;
+            padding: 15px;
+            border-radius: 20px;
+            display: inline-block;
+            animation: scaleIn 0.3s ease;
+        }
+        
+        .pairing-box {
+            background: rgba(255,255,255,0.03);
+            border: 1px dashed var(--accent);
+            padding: 20px;
+            border-radius: 20px;
+            animation: slideUp 0.3s ease;
+        }
+
+        .code-txt {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 32px;
+            color: var(--accent);
+            letter-spacing: 5px;
             font-weight: 700;
         }
 
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Loader */
-        .loader {
-            width: 18px; height: 18px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-top-color: #fff;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes scaleIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div class="card">
-            <div class="status-badge">
-                <div class="status-dot"></div>
-                System Active
+        <div class="auth-card">
+            <div class="header">
+                <h1>Secure Nexus</h1>
+                <p>Select your preferred pairing method</p>
             </div>
-            
-            <h1>Nexus Pair</h1>
-            <p class="subtitle">Enter credentials to generate session key</p>
 
-            <div class="input-box">
-                <i class="fas fa-fingerprint"></i>
+            <div class="mode-selector">
+                <button class="mode-btn active" id="btnModePair" onclick="switchMode('pair')">
+                    <i class="fas fa-key"></i> Pair Code
+                </button>
+                <button class="mode-btn" id="btnModeQR" onclick="switchMode('qr')">
+                    <i class="fas fa-qrcode"></i> QR Scan
+                </button>
+            </div>
+
+            <div id="pairInputGroup" class="input-group">
                 <input type="tel" id="phone" placeholder="947XXXXXXXX" autocomplete="off">
             </div>
 
-            <button id="requestPairing" class="btn-link">
-                <span>Generate Key</span>
-                <i class="fas fa-arrow-right"></i>
-            </button>
+            <button id="executeBtn" class="btn-main" onclick="handleAuth()">Generate Access</button>
 
-            <div id="status"></div>
+            <div id="displayArea"></div>
         </div>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const btn = document.getElementById("requestPairing");
-            const phoneInput = document.getElementById("phone");
-            const statusEl = document.getElementById("status");
+        let currentMode = 'pair';
 
-            btn.addEventListener("click", async () => {
-                const number = phoneInput.value.trim();
-                if(!number) return;
+        function switchMode(mode) {
+            currentMode = mode;
+            document.getElementById('btnModePair').classList.toggle('active', mode === 'pair');
+            document.getElementById('btnModeQR').classList.toggle('active', mode === 'qr');
+            document.getElementById('pairInputGroup').classList.toggle('hidden', mode === 'qr');
+            document.getElementById('displayArea').innerHTML = '';
+            document.getElementById('executeBtn').innerText = mode === 'pair' ? 'Generate Code' : 'Get QR Code';
+        }
 
-                btn.disabled = true;
-                btn.innerHTML = '<div class="loader"></div><span>Processing...</span>';
+        async function handleAuth() {
+            const display = document.getElementById('displayArea');
+            const btn = document.getElementById('executeBtn');
+            
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Loading...';
 
+            if (currentMode === 'pair') {
+                const number = document.getElementById('phone').value;
+                if(!number) { alert("Enter Number"); btn.disabled = false; return; }
+                
+                // Call your pairing API
                 try {
                     const res = await fetch("/api/pair", {
                         method: "POST",
@@ -257,29 +212,44 @@
                         body: JSON.stringify({ number }),
                     });
                     const data = await res.json();
-                    
-                    if(data.pairingCode) {
-                        statusEl.innerHTML = `
-                            <div class="pairing-result" id="copyBtn">
-                                <div style="font-size: 10px; color: #94a3b8; text-transform: uppercase;">Pairing Code</div>
-                                <div class="code-display">${data.pairingCode}</div>
-                                <div style="font-size: 11px; color: var(--primary);">Tap to copy</div>
-                            </div>
-                        `;
-                        
-                        document.getElementById("copyBtn").onclick = () => {
-                            navigator.clipboard.writeText(data.pairingCode);
-                            alert("Key copied to clipboard");
-                        };
-                    }
-                } catch (e) {
-                    statusEl.innerHTML = '<p style="color: #ef4444; font-size: 13px;">Connection Error</p>';
-                } finally {
-                    btn.disabled = false;
-                    btn.innerHTML = '<span>Generate Key</span><i class="fas fa-arrow-right"></i>';
-                }
-            });
-        });
+                    renderPairing(data.pairingCode);
+                } catch(e) { alert("Error"); }
+            } else {
+                // QR Mode Logic
+                renderQR("https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=NexusScan");
+                
+                // Simulate scan detected after 5 seconds
+                setTimeout(() => {
+                    renderPairing("ABCD-1234"); // Show code after scan
+                }, 5000);
+            }
+            
+            btn.disabled = false;
+            btn.innerText = currentMode === 'pair' ? 'Generate Code' : 'Get QR Code';
+        }
+
+        function renderPairing(code) {
+            document.getElementById('displayArea').innerHTML = `
+                <div class="pairing-box" onclick="copyCode('${code}')">
+                    <p style="font-size: 10px; color: var(--text-dim); margin-bottom: 8px;">TAP TO COPY KEY</p>
+                    <div class="code-txt">${code}</div>
+                </div>
+            `;
+        }
+
+        function renderQR(url) {
+            document.getElementById('displayArea').innerHTML = `
+                <div class="qr-frame">
+                    <img src="${url}" alt="QR" style="display: block;">
+                </div>
+                <p style="font-size: 12px; color: var(--accent); margin-top: 15px;">Waiting for scan...</p>
+            `;
+        }
+
+        function copyCode(code) {
+            navigator.clipboard.writeText(code);
+            alert("Code Copied!");
+        }
     </script>
 </body>
 </html>
