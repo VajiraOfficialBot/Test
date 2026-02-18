@@ -9,9 +9,9 @@
     
     <style>
         :root {
-            --bg: #020617; /* Deepest Midnight Blue */
-            --card-bg: rgba(15, 23, 42, 0.8); /* Slate Blue Glass */
-            --accent: #22d3ee; /* Electric Cyan */
+            --bg: #020617; 
+            --card-bg: rgba(15, 23, 42, 0.8); 
+            --accent: #22d3ee; 
             --primary-glow: rgba(34, 211, 238, 0.3);
             --border: rgba(51, 65, 85, 0.5);
             --text-dim: #94a3b8;
@@ -24,15 +24,35 @@
             color: white;
             height: 100vh;
             display: flex;
+            flex-direction: column; /* Changed to column to stack Top Name and Container */
             align-items: center;
             justify-content: center;
             font-family: 'Plus Jakarta Sans', sans-serif;
             overflow: hidden;
             perspective: 1000px;
-            /* Professional Gradient Mesh Background */
             background-image: 
                 radial-gradient(at 0% 0%, rgba(30, 58, 138, 0.3) 0, transparent 50%), 
                 radial-gradient(at 100% 100%, rgba(15, 23, 42, 1) 0, transparent 50%);
+        }
+
+        /* --- NEW TOP BOT NAME SECTION --- */
+        .page-header {
+            position: absolute;
+            top: 40px;
+            text-align: center;
+            width: 100%;
+            z-index: 100;
+        }
+
+        .page-header h1 {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            background: linear-gradient(to right, #fff, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px var(--primary-glow);
         }
 
         .container {
@@ -40,6 +60,7 @@
             max-width: 380px;
             transform-style: preserve-3d;
             animation: cardFloat 5s ease-in-out infinite;
+            margin-top: 60px; /* Offset for the top header */
         }
 
         @keyframes cardFloat {
@@ -47,22 +68,6 @@
             50% { transform: rotateY(2deg) rotateX(-2deg); }
         }
 
-        /* --- LOGO / TITLE --- */
-        .title-section {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        .title-section h1 {
-            font-size: 22px;
-            font-weight: 800;
-            letter-spacing: 2px;
-            background: linear-gradient(to right, #fff, var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* --- GENERATOR CARD --- */
         .glass-panel {
             background: var(--card-bg);
             backdrop-filter: blur(20px);
@@ -145,7 +150,6 @@
             transform: scale(1.02);
         }
 
-        /* --- SETTINGS SECTION (Separate Card) --- */
         .settings-card {
             background: rgba(30, 41, 59, 0.5);
             border: 1px solid var(--border);
@@ -173,7 +177,6 @@
 
         .settings-card i { color: var(--accent); font-size: 18px; }
 
-        /* --- RESULTS --- */
         #displayZone { margin-top: 25px; text-align: center; }
         .qr-frame { background: white; padding: 12px; border-radius: 20px; display: inline-block; animation: zoom 0.4s ease; }
         .code-box { 
@@ -193,11 +196,11 @@
 </head>
 <body>
 
-    <div class="container">
-        <div class="title-section">
-            <h1>FLEXA LITE</h1>
-        </div>
+    <div class="page-header">
+        <h1>FLEXA LITE</h1>
+    </div>
 
+    <div class="container">
         <div class="glass-panel">
             <div class="tab-row">
                 <button class="tab-btn active" id="pTab" onclick="switchMode('pair')">PAIRING</button>
@@ -211,6 +214,8 @@
                         <option value="91">🇮🇳 +91</option>
                         <option value="92">🇵🇰 +92</option>
                         <option value="1">🇺🇸 +1</option>
+                        <option value="234">🇳🇬 +234</option>
+                        <option value="62">🇮🇩 +62</option>
                     </select>
                     <input type="tel" id="num" placeholder="7XXXXXXXX">
                 </div>
