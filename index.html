@@ -11,9 +11,11 @@
         :root {
             --bg: #050505;
             --accent: #00ffd1;
-            --card-bg: rgba(20, 20, 20, 0.8);
-            --border: rgba(255, 255, 255, 0.08);
-            --text-dim: #888;
+            --accent-glow: rgba(0, 255, 209, 0.3);
+            --card-bg: rgba(25, 25, 25, 0.6);
+            --input-bg: rgba(0, 0, 0, 0.5);
+            --border: rgba(255, 255, 255, 0.1);
+            --text-dim: #a0a0a0;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -22,134 +24,153 @@
             background-color: var(--bg);
             color: white;
             height: 100vh;
-            width: 100vw;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            position: fixed;
-            background-image: radial-gradient(circle at 50% 50%, #111 0%, #050505 100%);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 255, 209, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 255, 209, 0.05) 0%, transparent 20%);
         }
 
-        /* Centered Wrapper */
         .container {
             width: 90%;
-            max-width: 400px;
-            perspective: 1000px;
+            max-width: 420px;
+            z-index: 10;
         }
 
         .auth-card {
             background: var(--card-bg);
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
             border: 1px solid var(--border);
-            border-radius: 30px;
-            padding: 40px 25px;
+            border-radius: 35px;
+            padding: 45px 30px;
             text-align: center;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.8);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
 
-        .header h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 5px; }
-        .header p { color: var(--text-dim); font-size: 13px; margin-bottom: 30px; }
+        .header h1 { 
+            font-size: 28px; 
+            font-weight: 800; 
+            background: linear-gradient(to right, #fff, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
 
-        /* Mode Selection Buttons */
+        .header p { color: var(--text-dim); font-size: 14px; margin-bottom: 35px; }
+
+        /* Combined Input Group */
+        .phone-container {
+            display: flex;
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            overflow: hidden;
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 25px;
+        }
+
+        .phone-container:focus-within {
+            border-color: var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow);
+            transform: scale(1.02);
+        }
+
+        select {
+            background: transparent;
+            color: var(--accent);
+            border: none;
+            padding: 0 15px;
+            font-size: 14px;
+            font-weight: 600;
+            outline: none;
+            cursor: pointer;
+            border-right: 1px solid var(--border);
+            max-width: 120px;
+        }
+
+        input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 18px;
+            color: white;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 16px;
+            outline: none;
+        }
+
         .mode-selector {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            background: rgba(255,255,255,0.03);
-            padding: 6px;
-            border-radius: 16px;
+            gap: 12px;
             margin-bottom: 25px;
-            border: 1px solid var(--border);
         }
 
         .mode-btn {
-            padding: 12px;
-            border-radius: 12px;
-            border: none;
-            background: transparent;
+            padding: 14px;
+            border-radius: 15px;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.03);
             color: var(--text-dim);
             font-weight: 600;
-            font-size: 13px;
             cursor: pointer;
             transition: 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
         }
 
         .mode-btn.active {
             background: var(--accent);
-            color: black;
-            box-shadow: 0 4px 15px rgba(0, 255, 209, 0.3);
+            color: #000;
+            border-color: var(--accent);
+            box-shadow: 0 8px 20px var(--accent-glow);
         }
-
-        /* Input Styles */
-        .input-group { margin-bottom: 20px; transition: 0.4s; }
-        .hidden { display: none; }
-
-        input {
-            width: 100%;
-            background: rgba(0,0,0,0.3);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 16px;
-            color: white;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 15px;
-            outline: none;
-            text-align: center;
-        }
-
-        input:focus { border-color: var(--accent); }
 
         .btn-main {
             width: 100%;
             padding: 18px;
-            border-radius: 16px;
+            border-radius: 18px;
             border: none;
-            background: white;
-            color: black;
+            background: #fff;
+            color: #000;
             font-weight: 800;
-            font-size: 14px;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
             cursor: pointer;
             transition: 0.3s;
         }
 
-        .btn-main:hover { transform: translateY(-2px); opacity: 0.9; }
-
-        /* Results Area */
-        #displayArea { margin-top: 25px; min-height: 100px; }
-        
-        .qr-frame {
-            background: white;
-            padding: 15px;
-            border-radius: 20px;
-            display: inline-block;
-            animation: scaleIn 0.3s ease;
+        .btn-main:hover {
+            background: var(--accent);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px var(--accent-glow);
         }
-        
+
+        /* Results Display */
+        #displayArea { margin-top: 30px; }
+
         .pairing-box {
-            background: rgba(255,255,255,0.03);
-            border: 1px dashed var(--accent);
-            padding: 20px;
-            border-radius: 20px;
-            animation: slideUp 0.3s ease;
+            background: rgba(0, 255, 209, 0.08);
+            border: 1px solid var(--accent);
+            padding: 25px;
+            border-radius: 22px;
+            animation: slideUp 0.5s ease;
+            cursor: pointer;
         }
 
         .code-txt {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 32px;
+            font-size: 34px;
             color: var(--accent);
-            letter-spacing: 5px;
-            font-weight: 700;
+            letter-spacing: 6px;
+            font-weight: 800;
+            text-shadow: 0 0 15px var(--accent-glow);
         }
 
-        @keyframes scaleIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        @keyframes slideUp { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .hidden { display: none; }
     </style>
 </head>
 <body>
@@ -158,29 +179,39 @@
         <div class="auth-card">
             <div class="header">
                 <h1>Secure Nexus</h1>
-                <p>Select your preferred pairing method</p>
+                <p>Advanced Pairing Protocol</p>
             </div>
 
             <div class="mode-selector">
-                <button class="mode-btn active" id="btnModePair" onclick="switchMode('pair')">
-                    <i class="fas fa-key"></i> Pair Code
-                </button>
-                <button class="mode-btn" id="btnModeQR" onclick="switchMode('qr')">
-                    <i class="fas fa-qrcode"></i> QR Scan
-                </button>
+                <button class="mode-btn active" id="btnModePair" onclick="switchMode('pair')">PAIRING</button>
+                <button class="mode-btn" id="btnModeQR" onclick="switchMode('qr')">QR SCAN</button>
             </div>
 
-            <div id="pairInputGroup" class="input-group">
-                <input type="tel" id="phone" placeholder="947XXXXXXXX" autocomplete="off">
+            <div id="pairInputGroup" class="phone-container">
+                <select id="countryCode">
+                    <option value="94">🇱🇰 +94</option>
+                    <option value="92">🇵🇰 +92</option>
+                    <option value="91">🇮🇳 +91</option>
+                    <option value="1">🇺🇸 +1</option>
+                    <option value="44">🇬🇧 +44</option>
+                    <option value="234">🇳🇬 +234</option>
+                    <option value="62">🇮🇩 +62</option>
+                    <option value="55">🇧🇷 +55</option>
+                    <option value="880">🇧🇩 +880</option>
+                    <option value="7">🇷🇺 +7</option>
+                    <option value="33">🇫🇷 +33</option>
+                    <option value="49">🇩🇪 +49</option>
+                    <option value="20">🇪🇬 +20</option>
+                </select>
+                <input type="tel" id="phone" placeholder="7XXXXXXXX" autocomplete="off">
             </div>
 
-            <button id="executeBtn" class="btn-main" onclick="handleAuth()">Generate Access</button>
+            <button id="executeBtn" class="btn-main" onclick="handleAuth()">Initialize</button>
 
             <div id="displayArea"></div>
         </div>
     </div>
 
-    <script src="/socket.io/socket.io.js"></script>
     <script>
         let currentMode = 'pair';
 
@@ -190,7 +221,7 @@
             document.getElementById('btnModeQR').classList.toggle('active', mode === 'qr');
             document.getElementById('pairInputGroup').classList.toggle('hidden', mode === 'qr');
             document.getElementById('displayArea').innerHTML = '';
-            document.getElementById('executeBtn').innerText = mode === 'pair' ? 'Generate Code' : 'Get QR Code';
+            document.getElementById('executeBtn').innerText = mode === 'pair' ? 'Initialize' : 'Generate QR';
         }
 
         async function handleAuth() {
@@ -198,57 +229,57 @@
             const btn = document.getElementById('executeBtn');
             
             btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Loading...';
+            btn.innerHTML = '<i class="fas fa-sync fa-spin"></i> Linking...';
 
             if (currentMode === 'pair') {
-                const number = document.getElementById('phone').value;
-                if(!number) { alert("Enter Number"); btn.disabled = false; return; }
+                const code = document.getElementById('countryCode').value;
+                const num = document.getElementById('phone').value;
+                if(!num) { 
+                    alert("Please enter number"); 
+                    btn.disabled = false; 
+                    btn.innerText = "Initialize";
+                    return; 
+                }
                 
-                // Call your pairing API
+                const fullNumber = code + num;
+                
                 try {
-                    const res = await fetch("/api/pair", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ number }),
-                    });
+                    // Optimized for your API endpoint structure
+                    const res = await fetch(`/api/pair?number=${fullNumber}`);
                     const data = await res.json();
-                    renderPairing(data.pairingCode);
-                } catch(e) { alert("Error"); }
+                    renderPairing(data.code || "SERVICE-ERR");
+                } catch(e) { 
+                    renderPairing("CONN-ERROR"); 
+                }
             } else {
-                // QR Mode Logic
                 renderQR("https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=NexusScan");
-                
-                // Simulate scan detected after 5 seconds
-                setTimeout(() => {
-                    renderPairing("ABCD-1234"); // Show code after scan
-                }, 5000);
             }
             
             btn.disabled = false;
-            btn.innerText = currentMode === 'pair' ? 'Generate Code' : 'Get QR Code';
+            btn.innerText = currentMode === 'pair' ? 'Initialize' : 'Generate QR';
         }
 
         function renderPairing(code) {
             document.getElementById('displayArea').innerHTML = `
                 <div class="pairing-box" onclick="copyCode('${code}')">
-                    <p style="font-size: 10px; color: var(--text-dim); margin-bottom: 8px;">TAP TO COPY KEY</p>
+                    <p style="font-size: 11px; color: var(--accent); margin-bottom: 10px; font-weight: 800;">ACCESS KEY READY</p>
                     <div class="code-txt">${code}</div>
+                    <p style="font-size: 10px; color: var(--text-dim); margin-top: 10px;">TAP TO SYNC</p>
                 </div>
             `;
         }
 
         function renderQR(url) {
             document.getElementById('displayArea').innerHTML = `
-                <div class="qr-frame">
+                <div style="background: white; padding: 15px; border-radius: 20px; display: inline-block;">
                     <img src="${url}" alt="QR" style="display: block;">
                 </div>
-                <p style="font-size: 12px; color: var(--accent); margin-top: 15px;">Waiting for scan...</p>
             `;
         }
 
         function copyCode(code) {
             navigator.clipboard.writeText(code);
-            alert("Code Copied!");
+            alert("Pairing Code Copied!");
         }
     </script>
 </body>
