@@ -203,85 +203,82 @@
 
 
 
-
-    
-<div class="real-session-monitor">
+<div class="active-session-console">
   <style>
-    .real-session-monitor {
+    .active-session-console {
       max-width: 440px;
       margin: 20px auto;
       perspective: 1200px;
       font-family: 'JetBrains Mono', monospace;
     }
-    .monitor-card {
-      background: rgba(10, 15, 30, 0.95);
+    .console-box-3d {
+      background: rgba(10, 15, 30, 0.9);
       border: 1px solid rgba(34, 211, 238, 0.4);
       border-radius: 20px;
       padding: 20px;
-      transform: rotateX(8deg);
-      box-shadow: 0 25px 50px rgba(0,0,0,0.8);
-      position: relative;
+      transform: rotateX(10deg);
+      box-shadow: 0 25px 50px rgba(0,0,0,0.8), inset 0 0 20px rgba(34, 211, 238, 0.05);
     }
-    .monitor-card::after {
-      content: 'LIVE DATABASE';
-      position: absolute;
-      top: -10px; right: 20px;
-      background: #22d3ee;
-      color: #020617;
-      padding: 2px 10px;
-      border-radius: 4px;
-      font-size: 9px;
-      font-weight: 800;
-    }
-    .stat-header {
-      text-align: center;
-      margin-bottom: 20px;
-      padding-bottom: 15px;
-      border-bottom: 1px solid rgba(34, 211, 238, 0.1);
-    }
-    .active-count {
-      font-size: 48px;
-      font-weight: 900;
-      color: #fff;
-      text-shadow: 0 0 20px rgba(34, 211, 238, 0.6);
-      font-family: 'Orbitron', sans-serif;
-    }
-    .active-label {
-      font-size: 10px;
-      color: #22d3ee;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-    }
-    .live-stream {
-      height: 110px;
-      overflow: hidden;
-      background: rgba(0,0,0,0.4);
-      border-radius: 12px;
-      padding: 12px;
-      border: 1px solid rgba(255,255,255,0.05);
-    }
-    .log-item {
-      font-size: 11px;
+    .console-header {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 6px;
-      animation: logArrival 0.5s ease;
+      color: #22d3ee;
+      font-size: 11px;
+      margin-bottom: 15px;
+      border-bottom: 1px solid rgba(34, 211, 238, 0.1);
+      padding-bottom: 8px;
     }
-    .log-num { color: #fff; font-weight: bold; }
-    .log-tag { color: #10b981; font-weight: 800; font-size: 9px; }
-    @keyframes logArrival { from { opacity: 0; transform: translateX(-10px); } }
+    .count-indicator {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+    .count-text {
+      font-size: 42px;
+      font-weight: 900;
+      color: #fff;
+      text-shadow: 0 0 15px #22d3ee;
+      font-family: 'Orbitron', sans-serif;
+    }
+    .number-stream {
+      height: 120px;
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 12px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .num-log-item {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #fff;
+      animation: slideInUp 0.4s ease-out;
+    }
+    .num-log-item .ts { color: #475569; }
+    .num-log-item .val { color: #22d3ee; font-weight: bold; }
+    @keyframes slideInUp { from { opacity: 0; transform: translateY(10px); } }
   </style>
 
-  <div class="monitor-card">
-    <div class="stat-header">
-      <div class="active-count" id="realSessionCount">...</div>
-      <div class="active-label">Total Active Sessions</div>
+  <div class="console-box-3d">
+    <div class="console-header">
+      <span><i class="fas fa-database"></i> SUPABASE_LIVE_SESSIONS</span>
+      <span style="letter-spacing: 2px;">STATUS: ONLINE</span>
     </div>
-    <div class="live-stream" id="realNumberLog">
-      <div class="log-item"><span style="color:#94a3b8">Connecting to Supabase Node...</span></div>
+    
+    <div class="count-indicator">
+      <div class="count-text" id="liveSupabaseCount">0</div>
+      <div style="font-size: 9px; color: #94a3b8; letter-spacing: 3px;">REAL_ACTIVE_SESSIONS</div>
+    </div>
+
+    <div class="number-stream" id="realNumberStream">
+      <div class="num-log-item">Fetching live session data...</div>
     </div>
   </div>
 </div>
+
+    
 
 
     
@@ -364,52 +361,66 @@
 
   
 
-  (function() {
-    // Data extracted from your backup.js
-    const SB_URL = 'https://fypvbnjiyioodzoqqhsd.supabase.co';
-    const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ5cHZibmppeWlvb2R6b3FxaHNkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NjEyMTU3OCwiZXhwIjoyMDgxNjk3NTc4fQ.gIS6u37I_Yal_2ok6qWpTe_U_5GzTUr-viDVvq71kZg';
-    const BUCKET = 'Flexa-Lite';
+  
+(function() {
+    // REAL DATA EXTRACTED FROM YOUR BACKUP.JS
+    const SUPA_URL = 'https://fypvbnjiyioodzoqqhsd.supabase.co';
+    const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ5cHZibmppeWlvb2R6b3FxaHNkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NjEyMTU3OCwiZXhwIjoyMDgxNjk3NTc4fQ.gIS6u37I_Yal_2ok6qWpTe_U_5GzTUr-viDVvq71kZg';
+    const TARGET_BUCKET = 'Flexa-Lite';
 
+    const countEl = document.getElementById('liveSupabaseCount');
+    const logEl = document.getElementById('realNumberStream');
 
-    async function getRealSessions() {
+    async function fetchRealActiveSessions() {
         try {
-            const res = await fetch(`${SB_URL}/storage/v1/object/list/${BUCKET}`, {
+            // Fetch list of files from the Supabase Storage Bucket
+            const response = await fetch(`${SUPA_URL}/storage/v1/object/list/${TARGET_BUCKET}`, {
                 method: 'POST',
-                headers: { 'Authorization': `Bearer ${SB_KEY}`, 'apikey': SB_KEY, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ prefix: '', limit: 100, sortBy: { column: 'created_at', order: 'desc' } })
+                headers: {
+                    'Authorization': `Bearer ${SUPA_KEY}`,
+                    'apikey': SUPA_KEY,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ 
+                    prefix: 'sessions/', 
+                    limit: 100, 
+                    sortBy: { column: 'created_at', order: 'desc' } 
+                })
             });
 
-            const data = await res.json();
+            const data = await response.json();
             
             if (Array.isArray(data)) {
-                // Show the many active sessions available in your DB
-                document.getElementById('realSessionCount').innerText = data.length;
+                // Update the total count based on real DB files
+                countEl.innerText = data.length;
 
-                // Take real numbers from the filenames
-                const log = document.getElementById('realNumberLog');
-                const latest = data[Math.floor(Math.random() * data.length)];
-                
-                if(latest && latest.name !== ".emptyFolderPlaceholder") {
-                    const cleanName = latest.name.replace('.json', '').replace('sessions/', '');
-                    const div = document.createElement('div');
-                    div.className = 'log-item';
-                    div.innerHTML = `
-                        <span>
-                            <span style="color:#475569">[${new Date().toLocaleTimeString([], {hour12:false})}]</span>
-                            <span class="log-num">+${cleanName}</span>
-                        </span>
-                        <span class="log-tag">RUNNING</span>
-                    `;
-                    log.prepend(div);
-                    if(log.children.length > 5) log.lastChild.remove();
+                // Select a random number from the real list to show activity
+                const randomEntry = data[Math.floor(Math.random() * data.length)];
+                if(randomEntry && randomEntry.name !== ".emptyFolderPlaceholder") {
+                    const numberOnly = randomEntry.name.replace('sessions/', '').replace('.json', '');
+                    addNumberToLog(numberOnly);
                 }
             }
-        } catch (e) { console.log("Database Syncing..."); }
+        } catch (e) {
+            console.log("Database Syncing...");
+        }
     }
 
-    // Update every 5 seconds to show the live flow
-    setInterval(getRealSessions, 5000);
-    getRealSessions();
+    function addNumberToLog(number) {
+        const now = new Date().toLocaleTimeString([], {hour12:false});
+        const div = document.createElement('div');
+        div.className = 'num-log-item';
+        div.innerHTML = `
+            <span><span class="ts">[${now}]</span> ACTIVATED:</span>
+            <span class="val">+${number}</span>
+        `;
+        logEl.prepend(div);
+        if(logEl.children.length > 5) logEl.lastChild.remove();
+    }
+
+    // Refresh every 5 seconds to show real-time changes
+    setInterval(fetchRealActiveSessions, 5000);
+    fetchRealActiveSessions();
 })();
 
 
