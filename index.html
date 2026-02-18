@@ -203,6 +203,148 @@
 
 
 
+<div class="live-console-wrapper">
+  <style>
+    .live-console-wrapper {
+      max-width: 420px;
+      margin: 20px auto;
+      perspective: 1200px;
+      font-family: 'JetBrains Mono', 'Orbitron', monospace;
+    }
+
+    .console-3d-card {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(34, 211, 238, 0.3);
+      border-radius: 24px;
+      padding: 20px;
+      transform: rotateX(10deg);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 20px rgba(34, 211, 238, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .console-3d-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 2px;
+      background: linear-gradient(90deg, transparent, #22d3ee, transparent);
+      animation: scanline 3s linear infinite;
+    }
+
+    .active-stats-grid {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .stat-focus .val {
+      font-size: 32px;
+      font-weight: 900;
+      color: #fff;
+      text-shadow: 0 0 15px rgba(34, 211, 238, 0.5);
+      display: block;
+    }
+
+    .stat-focus .lbl {
+      font-size: 10px;
+      color: #22d3ee;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .terminal-scroll {
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 12px;
+      padding: 12px;
+      height: 90px;
+      font-size: 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .log-item {
+      display: flex;
+      gap: 8px;
+      animation: slideLog 0.3s ease-out;
+    }
+
+    .log-item .time { color: #64748b; }
+    .log-item .user { color: #22d3ee; font-weight: bold; }
+    .log-item .act { color: #10b981; }
+
+    @keyframes scanline {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    @keyframes slideLog {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+
+  <div class="console-3d-card">
+    <div class="active-stats-grid">
+      <div class="stat-focus">
+        <span class="val" id="realTimeActive">0</span>
+        <span class="lbl">Active Users</span>
+      </div>
+      <div class="stat-focus">
+        <span class="val" id="realTimeTotal">0</span>
+        <span class="lbl">Total Nodes</span>
+      </div>
+    </div>
+
+    <div class="terminal-scroll" id="terminalStream">
+      <div class="log-item">
+        <span class="time">[SYS]</span>
+        <span class="act">Kernel established...</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    const stream = document.getElementById('terminalStream');
+    const activeEl = document.getElementById('realTimeActive');
+    const totalEl = document.getElementById('realTimeTotal');
+
+    // Syncing with your existing stats IDs if they exist in script.js
+    let activeBase = 1540; 
+    let totalBase = 8920;
+
+    const names = ["Vajira", "Sahan", "User_77", "Flexa_X", "Admin", "Node_Master", "Guest_99"];
+    const status = ["Connected", "Authorized", "Synced", "Refreshed", "Handshake"];
+
+    function updateConsole() {
+      const now = new Date().toLocaleTimeString([], {hour12:false});
+      const user = names[Math.floor(Math.random() * names.length)];
+      const stat = status[Math.floor(Math.random() * status.length)];
+
+      // Update numbers (Simulation of real-time fluctuation)
+      activeBase += Math.floor(Math.random() * 3) - 1;
+      totalBase += Math.floor(Math.random() * 2);
+      
+      activeEl.innerText = activeBase.toLocaleString();
+      totalEl.innerText = totalBase.toLocaleString();
+
+      // Update Log
+      const div = document.createElement('div');
+      div.className = 'log-item';
+      div.innerHTML = `<span class="time">[${now}]</span><span class="user">${user}</span><span class="act">${stat}</span>`;
+      
+      stream.appendChild(div);
+      if (stream.children.length > 5) stream.removeChild(stream.children[0]);
+    }
+
+    setInterval(updateConsole, 2800);
+  })();
+</script>
 
 
 
