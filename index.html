@@ -3,23 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Nexus | Global Auth</title>
+    <title>Flexa Lite</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg: #020202;
+            --bg: #080808;
             --accent: #00ffd1;
-            --accent-glow: rgba(0, 255, 209, 0.4);
             --glass: rgba(255, 255, 255, 0.03);
-            --border: rgba(255, 255, 255, 0.1);
-            --text-dim: #94a3b8;
+            --border: rgba(255, 255, 255, 0.08);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
 
-        /* Animated Particle Background */
         body {
             background-color: var(--bg);
             color: white;
@@ -28,257 +25,202 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            background: radial-gradient(circle at center, #111 0%, #080808 100%);
+        }
+
+        /* Compact Card */
+        .lite-card {
+            background: rgba(15, 15, 15, 0.8);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 25px;
+            width: 90%;
+            max-width: 340px; /* Smaller footprint */
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
             position: relative;
         }
 
-        #bg-canvas {
+        .title-bar {
+            font-size: 12px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            color: var(--accent);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        /* Settings Button */
+        .settings-btn {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1;
-            filter: blur(1px);
-        }
-
-        /* Glassmorphism Container */
-        .auth-card {
-            background: rgba(10, 10, 10, 0.7);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border);
-            border-radius: 40px;
-            padding: 50px 35px;
-            text-align: center;
-            width: 90%;
-            max-width: 420px;
-            box-shadow: 0 0 50px rgba(0, 255, 209, 0.05);
-            animation: fadeIn 1s ease-out;
-        }
-
-        .header h1 { 
-            font-size: 32px; 
-            font-weight: 800; 
-            letter-spacing: -1px;
-            background: linear-gradient(135deg, #fff 30%, var(--accent) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
-        }
-
-        .mode-selector {
-            display: flex;
-            background: var(--glass);
-            padding: 5px;
-            border-radius: 20px;
-            margin-bottom: 30px;
-            border: 1px solid var(--border);
-        }
-
-        .mode-btn {
-            flex: 1;
-            padding: 12px;
-            border-radius: 16px;
-            border: none;
-            background: transparent;
-            color: var(--text-dim);
-            font-weight: 700;
-            font-size: 13px;
+            top: 20px;
+            right: 20px;
+            color: #666;
+            font-size: 18px;
+            transition: 0.3s;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
+        .settings-btn:hover { color: var(--accent); transform: rotate(45deg); }
 
-        .mode-btn.active {
-            background: var(--accent);
-            color: #000;
-            box-shadow: 0 0 20px var(--accent-glow);
-        }
-
-        /* Input Experience */
-        .input-box {
-            background: var(--glass);
-            border: 1px solid var(--border);
-            border-radius: 20px;
+        /* Small Mode Buttons */
+        .mode-container {
             display: flex;
-            align-items: center;
-            padding: 10px 15px;
-            margin-bottom: 25px;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .m-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--glass);
+            color: #888;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
             transition: 0.3s;
         }
 
-        .input-box:focus-within {
+        .m-btn.active {
+            background: rgba(0, 255, 209, 0.1);
             border-color: var(--accent);
-            background: rgba(0, 255, 209, 0.05);
+            color: var(--accent);
+        }
+
+        /* Compact Inputs */
+        .input-group {
+            display: flex;
+            background: #000;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 15px;
+            overflow: hidden;
         }
 
         select, input {
             background: transparent;
             border: none;
             color: white;
+            padding: 12px;
+            font-size: 14px;
             outline: none;
-            font-size: 16px;
         }
 
-        select { color: var(--accent); font-weight: 700; margin-right: 10px; cursor: pointer; }
+        select { color: var(--accent); font-weight: bold; border-right: 1px solid var(--border); }
         input { flex: 1; font-family: 'JetBrains Mono', monospace; }
 
-        .btn-action {
+        .btn-exec {
             width: 100%;
-            padding: 20px;
-            border-radius: 20px;
+            padding: 14px;
+            border-radius: 12px;
             border: none;
-            background: #fff;
-            color: #000;
+            background: white;
+            color: black;
             font-weight: 800;
+            font-size: 12px;
             text-transform: uppercase;
-            letter-spacing: 2px;
             cursor: pointer;
-            transition: 0.3s;
+            transition: 0.2s;
         }
 
-        .btn-action:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(255,255,255,0.1);
-        }
+        .btn-exec:active { transform: scale(0.98); }
 
-        /* QR & Results View */
-        .qr-wrapper {
-            background: #fff;
-            padding: 20px;
-            border-radius: 25px;
+        /* Visual Feedback */
+        #result { margin-top: 20px; }
+        
+        .qr-frame {
+            background: white;
+            padding: 10px;
+            border-radius: 15px;
             display: inline-block;
-            margin-top: 20px;
-            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 0 40px var(--accent-glow);
+            animation: zoomIn 0.3s ease;
         }
 
-        .pairing-result {
-            margin-top: 25px;
-            padding: 25px;
-            border-radius: 25px;
-            background: rgba(0, 255, 209, 0.1);
-            border: 1px solid var(--accent);
-            cursor: pointer;
-            animation: slideUp 0.4s ease;
-        }
-
-        .code-display {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 32px;
+        .code-box {
+            padding: 15px;
+            background: var(--glass);
+            border: 1px dashed var(--accent);
+            border-radius: 15px;
             color: var(--accent);
-            letter-spacing: 5px;
-            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 20px;
+            letter-spacing: 3px;
         }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } }
-        @keyframes popIn { from { transform: scale(0.5); opacity: 0; } }
-        @keyframes slideUp { from { transform: translateY(10px); opacity: 0; } }
+        @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } }
         .hidden { display: none; }
     </style>
 </head>
 <body>
 
-    <canvas id="bg-canvas"></canvas>
+    <div class="lite-card">
+        <a href="setting.html" class="settings-btn">
+            <i class="fas fa-cog"></i>
+        </a>
 
-    <div class="auth-card">
-        <div class="header">
-            <h1>Nexus</h1>
-            <p style="color: var(--text-dim); font-size: 14px; margin-bottom: 35px;">Secure Authentication Node</p>
+        <div class="title-bar">FLEXA LITE | WHATSAPP BOT</div>
+
+        <div class="mode-container">
+            <button class="m-btn active" id="pBtn" onclick="toggle('pair')">PAIRING</button>
+            <button class="m-btn" id="qBtn" onclick="toggle('qr')">QR CODE</button>
         </div>
 
-        <div class="mode-selector">
-            <button class="mode-btn active" onclick="setMode('pair')">PAIRING</button>
-            <button class="mode-btn" onclick="setMode('qr')">QR SCAN</button>
-        </div>
-
-        <div id="pairView">
-            <div class="input-box">
-                <select id="country">
-                    <option value="94">🇱🇰 +94</option>
-                    <option value="91">🇮🇳 +91</option>
-                    <option value="92">🇵🇰 +92</option>
-                    <option value="1">🇺🇸 +1</option>
+        <div id="pairInput">
+            <div class="input-group">
+                <select id="cc">
+                    <option value="94">+94</option>
+                    <option value="91">+91</option>
+                    <option value="92">+92</option>
+                    <option value="1">+1</option>
                 </select>
-                <input type="tel" id="phone" placeholder="7XXXXXXXX">
+                <input type="tel" id="num" placeholder="7XXXXXXXX">
             </div>
-            <button class="btn-action" onclick="generate('pair')">Get Code</button>
+            <button class="btn-exec" onclick="start('pair')">Generate</button>
         </div>
 
-        <div id="qrView" class="hidden">
-            <button class="btn-action" onclick="generate('qr')">Generate QR</button>
+        <div id="qrInput" class="hidden">
+            <button class="btn-exec" onclick="start('qr')">Show QR</button>
         </div>
 
-        <div id="displayArea"></div>
+        <div id="result"></div>
     </div>
 
     <script>
-        // Particle Background Logic
-        const canvas = document.getElementById('bg-canvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-        
-        function initBg() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            particles = [];
-            for(let i=0; i<80; i++) {
-                particles.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    size: Math.random() * 2,
-                    speedX: (Math.random() - 0.5) * 0.5,
-                    speedY: (Math.random() - 0.5) * 0.5
-                });
-            }
+        let mode = 'pair';
+
+        function toggle(m) {
+            mode = m;
+            document.getElementById('pBtn').classList.toggle('active', m === 'pair');
+            document.getElementById('qBtn').classList.toggle('active', m === 'qr');
+            document.getElementById('pairInput').classList.toggle('hidden', m === 'qr');
+            document.getElementById('qrInput').classList.toggle('hidden', m === 'pair');
+            document.getElementById('result').innerHTML = '';
         }
 
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = 'rgba(0, 255, 209, 0.3)';
-            particles.forEach(p => {
-                p.x += p.speedX; p.y += p.speedY;
-                if(p.x < 0 || p.x > canvas.width) p.speedX *= -1;
-                if(p.y < 0 || p.y > canvas.height) p.speedY *= -1;
-                ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill();
-            });
-            requestAnimationFrame(animate);
-        }
-        initBg(); animate();
+        async function start(type) {
+            const res = document.getElementById('result');
+            res.innerHTML = '<i class="fas fa-spinner fa-spin" style="color:#444"></i>';
 
-        // UI Logic
-        function setMode(mode) {
-            document.querySelectorAll('.mode-btn').forEach((b, i) => b.classList.toggle('active', (i === 0 && mode === 'pair') || (i === 1 && mode === 'qr')));
-            document.getElementById('pairView').classList.toggle('hidden', mode === 'qr');
-            document.getElementById('qrView').classList.toggle('hidden', mode === 'pair');
-            document.getElementById('displayArea').innerHTML = '';
-        }
-
-        async function generate(type) {
-            const area = document.getElementById('displayArea');
-            area.innerHTML = `<div style="margin-top:20px;"><i class="fas fa-circle-notch fa-spin fa-2x" style="color:var(--accent)"></i></div>`;
-            
             if(type === 'pair') {
-                const fullNum = document.getElementById('country').value + document.getElementById('phone').value;
-                // Fetch logic goes here (mocking for demo)
+                const full = document.getElementById('cc').value + document.getElementById('num').value;
+                if(!document.getElementById('num').value) { alert("Enter Number"); res.innerHTML = ""; return; }
+                
+                // Fetch call logic
                 setTimeout(() => {
-                    area.innerHTML = `
-                        <div class="pairing-result" onclick="copy('NX-7890')">
-                            <span style="font-size:10px; font-weight:800;">TAP TO COPY</span>
-                            <div class="code-display">NX-7890</div>
-                        </div>`;
-                }, 1000);
-            } else {
-                // Direct QR generation
-                setTimeout(() => {
-                    area.innerHTML = `
-                        <div class="qr-wrapper">
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=NexusAuth" style="display:block;">
-                        </div>
-                        <p style="margin-top:15px; color:var(--accent); font-weight:800; font-size:12px;">READY TO SCAN</p>`;
+                    res.innerHTML = `<div class="code-box" onclick="copy('FL-9021')">FL-9021</div><p style="font-size:9px; color:#555; margin-top:8px;">TAP TO COPY</p>`;
                 }, 800);
+            } else {
+                setTimeout(() => {
+                    res.innerHTML = `<div class="qr-frame"><img src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=FlexaLite" style="display:block;"></div>`;
+                }, 500);
             }
         }
 
-        function copy(text) {
-            navigator.clipboard.writeText(text);
-            alert("Copied to Nexus Clipboard");
+        function copy(t) {
+            navigator.clipboard.writeText(t);
+            alert("Copied!");
         }
     </script>
 </body>
