@@ -3,288 +3,240 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Flexa Lite | Professional Auth</title>
+    <title>Flexa Lite | Elite Bot</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --primary: #00ffd1;
-            --bg-dark: #0a0a0c;
-            --card-bg: #111114;
-            --border: rgba(255, 255, 255, 0.06);
-            --text-main: #e2e8f0;
-            --text-dim: #64748b;
+            --bg: #050505;
+            --panel: #0d0d10;
+            --accent: #00ffd1;
+            --accent-glow: rgba(0, 255, 209, 0.2);
+            --border: rgba(255, 255, 255, 0.05);
+            --text: #ffffff;
+            --text-dim: #6b7280;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Space Grotesk', sans-serif; }
 
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            height: 100vh;
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            background-image: radial-gradient(circle at 50% 50%, #16161a 0%, #0a0a0c 100%);
+            padding: 20px;
+            background-image: radial-gradient(circle at top right, #101014 0%, #050505 100%);
         }
 
-        .auth-container {
+        /* --- SECTION 1: TOP NAVIGATION --- */
+        .top-nav {
             width: 100%;
-            max-width: 360px;
-            background: var(--card-bg);
+            max-width: 400px;
+            background: var(--panel);
             border: 1px solid var(--border);
-            border-radius: 28px;
-            padding: 24px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        }
-
-        /* Top Title Branding */
-        .brand-header {
-            text-align: center;
-            margin-bottom: 24px;
-        }
-
-        .brand-header h1 {
-            font-size: 14px;
-            font-weight: 800;
-            letter-spacing: 2px;
-            color: var(--primary);
-            text-transform: uppercase;
-        }
-
-        /* Separate Control Row for Setting and Modes */
-        .controls-row {
+            border-radius: 20px;
+            padding: 15px 20px;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
         }
 
-        .settings-btn {
-            height: 42px;
-            width: 42px;
+        .logo-area h1 { font-size: 16px; letter-spacing: 1px; color: var(--accent); }
+        
+        .settings-link {
+            width: 38px;
+            height: 38px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            color: var(--text-dim);
+            color: white;
             text-decoration: none;
-            transition: all 0.3s;
+            transition: 0.3s;
         }
+        .settings-link:hover { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
 
-        .settings-btn:hover {
-            color: var(--primary);
-            border-color: var(--primary);
-            background: rgba(0, 255, 209, 0.05);
-        }
-
-        .mode-switcher {
-            flex: 1;
-            display: flex;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 4px;
-            border-radius: 12px;
+        /* --- SECTION 2: INTERACTIVE AUTH PANEL --- */
+        .main-panel {
+            width: 100%;
+            max-width: 400px;
+            background: var(--panel);
             border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 25px;
+            margin-bottom: 12px;
+        }
+
+        .mode-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
         }
 
         .mode-btn {
             flex: 1;
-            padding: 8px;
-            border: none;
-            background: transparent;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: rgba(0,0,0,0.3);
             color: var(--text-dim);
-            font-size: 11px;
-            font-weight: 700;
+            font-weight: 600;
+            font-size: 12px;
             cursor: pointer;
-            border-radius: 8px;
-            transition: 0.3s;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         .mode-btn.active {
-            background: var(--primary);
+            background: var(--accent);
             color: #000;
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px var(--accent-glow);
         }
 
-        /* Professional Input block */
-        .input-group {
+        .input-wrap {
+            display: flex;
             background: #000;
             border: 1px solid var(--border);
-            border-radius: 16px;
-            display: flex;
-            margin-bottom: 16px;
-            transition: 0.3s;
+            border-radius: 14px;
+            margin-bottom: 20px;
+            overflow: hidden;
         }
 
-        .input-group:focus-within {
-            border-color: var(--primary);
-        }
+        select { background: transparent; color: var(--accent); padding: 12px; border: none; font-weight: bold; border-right: 1px solid var(--border); outline: none; }
+        input { flex: 1; background: transparent; color: white; border: none; padding: 12px; outline: none; font-family: 'JetBrains Mono', monospace; }
 
-        select {
-            background: transparent;
-            border: none;
-            color: var(--primary);
-            font-weight: 700;
-            padding: 0 15px;
-            outline: none;
-            border-right: 1px solid var(--border);
-            cursor: pointer;
-        }
-
-        input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            padding: 15px;
-            color: white;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 15px;
-            outline: none;
-        }
-
-        .action-btn {
+        .exec-btn {
             width: 100%;
             padding: 16px;
-            border-radius: 16px;
+            border-radius: 14px;
             border: none;
             background: white;
             color: black;
             font-weight: 800;
-            font-size: 13px;
             text-transform: uppercase;
             letter-spacing: 1px;
             cursor: pointer;
             transition: 0.3s;
         }
+        .exec-btn:hover { background: var(--accent); transform: scale(1.02); }
 
-        .action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
-
-        /* Result Area */
-        #displayZone {
-            margin-top: 20px;
-            min-height: 40px;
-            text-align: center;
-        }
-
-        .pair-code-card {
-            background: rgba(0, 255, 209, 0.05);
-            border: 1px dashed var(--primary);
-            border-radius: 16px;
+        /* --- SECTION 3: BOT INFO SECTION --- */
+        .info-panel {
+            width: 100%;
+            max-width: 400px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 24px;
             padding: 20px;
-            animation: slideUp 0.4s ease;
-            cursor: pointer;
         }
 
-        .pair-code-card .code {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 26px;
-            color: var(--primary);
-            letter-spacing: 4px;
-            font-weight: 700;
+        .info-title { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 5px; }
+        
+        .feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .feature-item { 
+            background: rgba(255,255,255,0.02); 
+            padding: 12px; 
+            border-radius: 12px; 
+            font-size: 12px;
+            border: 1px solid transparent;
         }
+        .feature-item i { color: var(--accent); margin-right: 8px; }
+        .feature-item:hover { border-color: var(--border); background: rgba(255,255,255,0.05); }
 
-        .qr-card {
-            background: white;
-            padding: 12px;
-            border-radius: 20px;
-            display: inline-block;
-            animation: zoomIn 0.3s ease;
-        }
+        /* Dynamic Result */
+        #displayZone { margin-top: 20px; text-align: center; }
+        .qr-out { background: white; padding: 10px; border-radius: 15px; display: inline-block; animation: pop 0.3s ease; }
+        .code-out { padding: 15px; border: 1px dashed var(--accent); border-radius: 15px; color: var(--accent); font-family: 'JetBrains Mono'; font-size: 22px; animation: slide 0.3s ease; }
 
-        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } }
-        @keyframes zoomIn { from { opacity: 0; transform: scale(0.9); } }
+        @keyframes pop { from { transform: scale(0.8); opacity: 0; } }
+        @keyframes slide { from { transform: translateY(10px); opacity: 0; } }
         .hidden { display: none; }
     </style>
 </head>
 <body>
 
-    <div class="auth-container">
-        <div class="brand-header">
-            <h1>Flexa Lite | WhatsApp Bot</h1>
+    <header class="top-nav">
+        <div class="logo-area">
+            <h1>FLEXA LITE</h1>
+        </div>
+        <a href="setting.html" class="settings-link">
+            <i class="fas fa-cog fa-spin-hover"></i>
+        </a>
+    </header>
+
+    <section class="main-panel">
+        <div class="mode-selector">
+            <button class="mode-btn active" id="pBtn" onclick="toggle('pair')">PAIRING CODE</button>
+            <button class="mode-btn" id="qBtn" onclick="toggle('qr')">QR SCANNER</button>
         </div>
 
-        <div class="controls-row">
-            <a href="setting.html" class="settings-btn" title="Settings">
-                <i class="fas fa-sliders-h"></i>
-            </a>
-            <div class="mode-switcher">
-                <button class="mode-btn active" id="pBtn" onclick="toggle('pair')">PAIRING</button>
-                <button class="mode-btn" id="qBtn" onclick="toggle('qr')">QR CODE</button>
-            </div>
-        </div>
-
-        <div id="pairUI">
-            <div class="input-group">
-                <select id="country">
+        <div id="pairGroup">
+            <div class="input-wrap">
+                <select id="cc">
                     <option value="94">+94</option>
                     <option value="92">+92</option>
                     <option value="91">+91</option>
-                    <option value="1">+1</option>
-                    <option value="234">+234</option>
                 </select>
-                <input type="tel" id="phoneNumber" placeholder="7XXXXXXXX" autocomplete="off">
+                <input type="tel" id="num" placeholder="7XXXXXXXX">
             </div>
-            <button class="action-btn" onclick="execute('pair')">Generate Code</button>
+            <button class="exec-btn" onclick="run('pair')">Initialize Node</button>
         </div>
 
-        <div id="qrUI" class="hidden">
-            <button class="action-btn" onclick="execute('qr')">Generate QR</button>
+        <div id="qrGroup" class="hidden">
+            <button class="exec-btn" onclick="run('qr')">Generate QR Matrix</button>
         </div>
 
         <div id="displayZone"></div>
-    </div>
+    </section>
+
+    <section class="info-panel">
+        <p class="info-title">System Capabilities</p>
+        <div class="feature-grid">
+            <div class="feature-item"><i class="fas fa-bolt"></i> High Speed</div>
+            <div class="feature-item"><i class="fas fa-shield-halved"></i> Anti-Ban</div>
+            <div class="feature-item"><i class="fas fa-robot"></i> AI Powered</div>
+            <div class="feature-item"><i class="fas fa-code"></i> Multi-Device</div>
+        </div>
+        <p style="font-size: 10px; color: var(--text-dim); margin-top: 15px; text-align: center;">V3.0.4 | Status: <span style="color: var(--accent)">Optimal</span></p>
+    </section>
 
     <script>
-        let currentType = 'pair';
-
-        function toggle(t) {
-            currentType = t;
-            document.getElementById('pBtn').classList.toggle('active', t === 'pair');
-            document.getElementById('qBtn').classList.toggle('active', t === 'qr');
-            document.getElementById('pairUI').classList.toggle('hidden', t === 'qr');
-            document.getElementById('qrUI').classList.toggle('hidden', t === 'pair');
+        function toggle(m) {
+            document.getElementById('pBtn').classList.toggle('active', m === 'pair');
+            document.getElementById('qBtn').classList.toggle('active', m === 'qr');
+            document.getElementById('pairGroup').classList.toggle('hidden', m === 'qr');
+            document.getElementById('qrGroup').classList.toggle('hidden', m === 'pair');
             document.getElementById('displayZone').innerHTML = '';
         }
 
-        async function execute(type) {
+        async function run(type) {
             const zone = document.getElementById('displayZone');
-            zone.innerHTML = '<i class="fas fa-circle-notch fa-spin" style="color:var(--text-dim)"></i>';
+            zone.innerHTML = '<i class="fas fa-circle-notch fa-spin fa-2x"></i>';
 
             if(type === 'pair') {
-                const num = document.getElementById('phoneNumber').value;
-                if(!num) { 
-                    zone.innerHTML = '<span style="color:#ff4747; font-size:12px;">Enter phone number</span>'; 
-                    return; 
-                }
-                
-                // Fetch logic replacement
+                const val = document.getElementById('num').value;
+                if(!val) { zone.innerHTML = "Error: Input required"; return; }
                 setTimeout(() => {
-                    const mockCode = "FX-778899";
-                    zone.innerHTML = `
-                        <div class="pair-code-card" onclick="copy('${mockCode}')">
-                            <p style="font-size:9px; color:var(--text-dim); margin-bottom:8px;">TAP TO COPY ACCESS KEY</p>
-                            <div class="code">${mockCode}</div>
-                        </div>`;
+                    const c = "FLX-9900";
+                    zone.innerHTML = `<div class="code-out" onclick="copy('${c}')">${c}</div>`;
                 }, 1000);
             } else {
                 setTimeout(() => {
-                    zone.innerHTML = `
-                        <div class="qr-card">
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=FlexaLiteQR" style="display:block;">
-                        </div>
-                        <p style="font-size:11px; color:var(--primary); margin-top:12px; font-weight:700;">READY TO SCAN</p>`;
+                    zone.innerHTML = `<div class="qr-out"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Flexa" style="display:block;"></div>`;
                 }, 800);
             }
         }
 
-        function copy(text) {
-            navigator.clipboard.writeText(text);
-            alert("Pair Code Copied!");
+        function copy(t) {
+            navigator.clipboard.writeText(t);
+            alert("Node ID Copied");
         }
     </script>
 </body>
