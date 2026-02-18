@@ -3,139 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WhatsApp Bot | Secure Pairing</title>
+    <title>Nexus Auth | Secure WhatsApp Pairing</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     
     <style>
-        /* Modern UI Styles */
         :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --bg: #0f172a;
-            --card-bg: #1e293b;
-            --text: #f8fafc;
-            --text-muted: #94a3b8;
-            --success: #22c55e;
-            --error: #ef4444;
-            --glass: rgba(255, 255, 255, 0.03);
+            --accent: #00f2fe;
+            --accent-glow: rgba(0, 242, 254, 0.5);
+            --bg-dark: #05070a;
+            --glass-bg: rgba(15, 23, 42, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-main: #ffffff;
+            --text-dim: #94a3b8;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            cursor: default;
         }
 
         body {
-            background-color: var(--bg);
-            background-image: 
-                radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 100% 100%, rgba(168, 85, 247, 0.1) 0%, transparent 50%);
-            color: var(--text);
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Animated Tech Background */
+        body::before {
+            content: "";
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 50% 50%, #1e293b 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, #0c4a6e 0%, transparent 30%),
+                        radial-gradient(circle at 20% 80%, #1e1b4b 0%, transparent 30%);
+            animation: rotateBg 20s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes rotateBg {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         .container {
             width: 100%;
-            max-width: 450px;
-            animation: fadeIn 0.8s ease-out;
+            max-width: 480px;
+            padding: 20px;
+            perspective: 1000px;
         }
 
         .card {
-            background: var(--card-bg);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            padding: 40px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(10px);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: 32px;
+            padding: 48px;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Futuristic Scanline Effect */
+        .card::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            animation: scan 4s linear infinite;
+            opacity: 0.3;
+        }
+
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
         }
 
         .header {
             text-align: center;
-            margin-bottom: 32px;
+            margin-bottom: 40px;
+        }
+
+        .logo-container {
+            position: relative;
+            width: fit-content;
+            margin: 0 auto 24px;
         }
 
         .logo-box {
-            width: 64px;
-            height: 64px;
-            background: var(--primary);
-            border-radius: 16px;
+            width: 72px;
+            height: 72px;
+            background: linear-gradient(135deg, var(--accent), #4facfe);
+            border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 20px;
-            font-size: 28px;
-            box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+            font-size: 32px;
+            color: #000;
+            box-shadow: 0 0 30px var(--accent-glow);
         }
 
         h1 {
-            font-size: 24px;
-            font-weight: 800;
-            margin-bottom: 8px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 12px;
         }
 
         .subtitle {
-            color: var(--text-muted);
-            font-size: 14px;
+            color: var(--text-dim);
+            font-size: 15px;
+            line-height: 1.6;
         }
 
         .input-group {
-            margin-bottom: 24px;
+            margin-bottom: 30px;
         }
 
         label {
             display: block;
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--accent);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 2px;
         }
 
         .input-wrapper {
             position: relative;
         }
 
-        .input-wrapper i {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-        }
-
         input {
             width: 100%;
-            background: rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 14px 14px 14px 45px;
-            color: white;
+            border-radius: 16px;
+            padding: 18px 20px 18px 50px;
+            color: #fff;
             font-size: 16px;
-            transition: all 0.3s;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         input:focus {
             outline: none;
-            border-color: var(--primary);
-            background: rgba(0, 0, 0, 0.3);
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.07);
+            box-shadow: 0 0 20px rgba(0, 242, 254, 0.1);
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--accent);
+            font-size: 18px;
         }
 
         .btn {
             width: 100%;
-            background: var(--primary);
-            color: white;
+            background: var(--text-main);
+            color: var(--bg-dark);
             border: none;
-            border-radius: 12px;
-            padding: 16px;
+            border-radius: 16px;
+            padding: 18px;
             font-size: 16px;
             font-weight: 700;
             cursor: pointer;
@@ -143,77 +186,54 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 12px;
         }
 
         .btn:hover {
-            background: var(--primary-dark);
-            transform: translateY(-1px);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 255, 255, 0.2);
+            background: var(--accent);
         }
 
-        .btn:active {
-            transform: translateY(0);
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        /* Status & Pairing Code */
-        #status {
-            margin-top: 24px;
-            border-radius: 12px;
-            transition: all 0.3s;
-        }
-
-        .pairing-code-container {
-            background: rgba(0, 0, 0, 0.3);
-            border: 2px dashed var(--primary);
-            border-radius: 12px;
-            padding: 20px;
+        /* Pairing Code Styling */
+        .pairing-card {
+            margin-top: 30px;
+            background: rgba(0, 242, 254, 0.05);
+            border: 1px solid rgba(0, 242, 254, 0.2);
+            border-radius: 20px;
+            padding: 24px;
             text-align: center;
-            cursor: pointer;
-            position: relative;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        .code-grid {
+            font-family: 'Space Grotesk', monospace;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--accent);
+            letter-spacing: 8px;
+            margin: 15px 0;
+            text-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .status-msg {
+            font-size: 14px;
             margin-top: 15px;
+            color: var(--text-dim);
         }
 
-        .code-display {
-            font-family: monospace;
-            font-size: 28px;
-            letter-spacing: 6px;
-            font-weight: 800;
-            color: var(--primary);
-        }
-
-        .copy-hint {
-            display: block;
-            font-size: 11px;
-            color: var(--text-muted);
-            margin-top: 8px;
-        }
-
-        /* Loading Spinner */
         .spinner {
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,0.3);
+            width: 22px;
+            height: 22px;
+            border: 3px solid rgba(0,0,0,0.1);
+            border-top-color: #000;
             border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s linear infinite;
+            animation: spin 0.8s linear infinite;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .error { color: var(--error); font-size: 14px; text-align: center; }
-        .loading { color: var(--text-muted); font-size: 14px; text-align: center; }
     </style>
 </head>
 <body>
@@ -221,24 +241,26 @@
     <div class="container">
         <div class="card">
             <div class="header">
-                <div class="logo-box">
-                    <i class="fab fa-whatsapp"></i>
+                <div class="logo-container">
+                    <div class="logo-box">
+                        <i class="fab fa-whatsapp"></i>
+                    </div>
                 </div>
-                <h1>Link Your Device</h1>
-                <p class="subtitle">Enter your number to generate a pairing code</p>
+                <h1>Nexus Auth</h1>
+                <p class="subtitle">Establish a secure encrypted tunnel to your device.</p>
             </div>
 
             <div class="input-group">
-                <label for="phone">Phone Number</label>
+                <label>International Format</label>
                 <div class="input-wrapper">
-                    <i class="fas fa-globe"></i>
-                    <input type="tel" id="phone" placeholder="e.g. 947XXXXXXXX" autocomplete="off">
+                    <i class="fas fa-shield-halved"></i>
+                    <input type="tel" id="phone" placeholder="947XXXXXXXX" autocomplete="off">
                 </div>
             </div>
 
             <button id="requestPairing" class="btn">
-                <span>Generate Code</span>
-                <i class="fas fa-arrow-right"></i>
+                <span>INITIALIZE PAIRING</span>
+                <i class="fas fa-bolt-lightning"></i>
             </button>
 
             <div id="status"></div>
@@ -246,95 +268,60 @@
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
-    
     <script>
+        // ... (Keep your original functional JS logic here, just update the render function)
+        
         document.addEventListener("DOMContentLoaded", () => {
             const socket = io();
             const phoneInput = document.getElementById("phone");
             const requestPairingBtn = document.getElementById("requestPairing");
             const statusEl = document.getElementById("status");
 
-            // Reusing core logic from original scripts.js
             requestPairingBtn.addEventListener("click", async () => {
                 const number = phoneInput.value.trim();
-                
-                if (!number) {
-                    showStatus("❌ Please enter your phone number.", "error");
-                    return;
-                }
+                if (!number) return showStatus("Input Required", "error");
 
-                // Phone validation logic
-                if (!/^[0-9]{8,15}$/.test(number.replace(/\D/g, ''))) {
-                    showStatus("❌ Invalid format. Use digits only (8-15 chars).", "error");
-                    return;
-                }
-
-                // UI Loading State
                 requestPairingBtn.disabled = true;
-                requestPairingBtn.innerHTML = '<div class="spinner"></div><span>Requesting...</span>';
-                showStatus("Generating secure code...", "loading");
-
+                requestPairingBtn.innerHTML = '<div class="spinner"></div><span>AUTHORIZING...</span>';
+                
                 try {
-                    // Fetch call to original API endpoint
                     const res = await fetch("/api/pair", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ number }),
                     });
-                    
                     const data = await res.json();
+                    if (!res.ok) throw new Error(data.error);
                     
-                    if (!res.ok) {
-                        showStatus("❌ Error: " + (data.error || "Failed"), "error");
-                        resetButton();
-                        return;
-                    }
-
-                    const code = (data.pairingCode || "").toString().trim();
-                    renderPairingCode(code, number);
-
+                    renderPairingCode(data.pairingCode);
                 } catch (err) {
-                    showStatus("❌ Connection error. Try again.", "error");
-                } finally {
+                    showStatus(err.message || "Link Failed", "error");
                     resetButton();
                 }
             });
 
-            function renderPairingCode(code, number) {
-                const spacedCode = code.split("").join(" ");
+            function renderPairingCode(code) {
                 statusEl.innerHTML = `
-                    <div style="text-align: center; margin-top: 20px;">
-                        <p style="font-size: 13px; color: var(--success); font-weight: 600;">✅ Code generated for ${number}</p>
-                        <div class="pairing-code-container" id="copyContainer">
-                            <div class="code-display">${spacedCode}</div>
-                            <span class="copy-hint"><i class="far fa-copy"></i> Click to copy code</span>
-                        </div>
+                    <div class="pairing-card" id="copyContainer" style="cursor: pointer;">
+                        <p style="font-size: 11px; color: var(--accent); letter-spacing: 1px;">ENCRYPTION KEY READY</p>
+                        <div class="code-grid">${code}</div>
+                        <p class="status-msg"><i class="far fa-copy"></i> TAP TO COPY TO CLIPBOARD</p>
                     </div>
                 `;
-
-                // Add copy functionality
+                
                 document.getElementById("copyContainer").addEventListener("click", () => {
-                    navigator.clipboard.writeText(code).then(() => {
-                        const hint = document.querySelector(".copy-hint");
-                        const display = document.querySelector(".code-display");
-                        hint.innerHTML = "<span style='color: var(--success)'>Copied to clipboard!</span>";
-                        display.style.transform = "scale(1.05)";
-                        setTimeout(() => {
-                            hint.innerHTML = "<i class='far fa-copy'></i> Click to copy code";
-                            display.style.transform = "scale(1)";
-                        }, 2000);
-                    });
+                    navigator.clipboard.writeText(code);
+                    document.querySelector(".status-msg").innerHTML = "<span style='color: var(--accent)'>KEY COPIED TO BUFFER</span>";
                 });
             }
 
             function showStatus(msg, type) {
-                statusEl.className = type;
-                statusEl.innerHTML = `<p style="margin-top: 15px;">${msg}</p>`;
+                statusEl.innerHTML = `<p class="status-msg" style="text-align:center; color: ${type === 'error' ? '#ef4444' : 'var(--accent)'}">${msg}</p>`;
             }
 
             function resetButton() {
                 requestPairingBtn.disabled = false;
-                requestPairingBtn.innerHTML = '<span>Generate Code</span><i class="fas fa-arrow-right"></i>';
+                requestPairingBtn.innerHTML = '<span>INITIALIZE PAIRING</span><i class="fas fa-bolt-lightning"></i>';
             }
         });
     </script>
