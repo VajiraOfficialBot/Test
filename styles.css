@@ -1,58 +1,24 @@
-/* Updated Professional Tech Variables */
 :root {
-  --bg: #030712; /* Deep Black/Blue */
-  --card: rgba(17, 24, 39, 0.7);
-  --accent: #0ea5e9; /* Professional Cyan */
-  --accent-glow: rgba(14, 165, 233, 0.3);
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --radius: 16px; /* Slightly sharper, more modern radius */
-  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --font-heading: 'Orbitron', sans-serif;
-  --font-body: 'Inter', system-ui, sans-serif;
+  --bg: #0a0a16;
+  --card: rgba(20, 15, 40, 0.92);
+  --accent-1: #9d4edd;
+  --accent-2: #7b2cbf;
+  --accent-3: #c77dff;
+  --accent-4: #5a189a;
+  --muted: #e0aaff;
+  --text: #f8f7ff;
+  --glass-border: rgba(157, 78, 221, 0.25);
+  --radius: 28px;
+  --max-width: 1300px;
+  --success: #38b000;
+  --warning: #ff9e00;
+  --error: #ff0054;
+  --shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+  --glow: 0 0 40px rgba(157, 78, 221, 0.7);
+  --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --gradient-1: linear-gradient(135deg, #9d4edd, #7b2cbf, #5a189a);
+  --gradient-2: linear-gradient(135deg, #c77dff, #9d4edd, #7b2cbf);
 }
-
-
-/* Professional Card Style */
-.modal-content, .connect-card, .resource-tile {
-  background: var(--card) !important;
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-border) !important;
-  border-radius: var(--radius) !important;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
-  transition: var(--transition);
-}
-
-.modal-content:hover, .connect-card:hover {
-  border-color: var(--accent) !important;
-  box-shadow: 0 0 20px var(--accent-glow);
-}
-
-/* Updated Button Style */
-.btn, .generate-btn {
-  background: var(--accent) !important;
-  border-radius: 8px !important;
-  font-weight: 600 !important;
-  letter-spacing: 0.5px;
-  text-transform: none !important; /* Professional look uses normal casing */
-  transition: var(--transition) !important;
-}
-
-.btn:hover, .generate-btn:hover {
-  filter: brightness(1.1);
-  transform: translateY(-2px);
-  box-shadow: 0 10px 15px -3px var(--accent-glow);
-}
-
-
-
-
-
-
-
-
-
 
 * {
   box-sizing: border-box;
@@ -66,14 +32,20 @@ html {
 }
 
 body {
-  font-family: var(--font-body);
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
   background: var(--bg);
-  color: var(--text-main);
+  color: var(--text);
+  padding-top: 90px;
+  overflow-x: hidden;
+  line-height: 1.8;
+  min-height: 100vh;
+  font-weight: 400;
   background-image: 
-    radial-gradient(circle at 0% 0%, rgba(14, 165, 233, 0.1) 0%, transparent 40%),
-    radial-gradient(circle at 100% 100%, rgba(14, 165, 233, 0.05) 0%, transparent 40%);
+    radial-gradient(circle at 10% 20%, rgba(157, 78, 221, 0.15) 0%, transparent 20%),
+    radial-gradient(circle at 90% 10%, rgba(123, 44, 191, 0.1) 0%, transparent 20%),
+    radial-gradient(circle at 30% 90%, rgba(90, 24, 154, 0.1) 0%, transparent 20%),
+    radial-gradient(circle at 70% 80%, rgba(199, 125, 255, 0.05) 0%, transparent 20%);
 }
-
 
 /* Cyberpunk Grid Background */
 body::before {
