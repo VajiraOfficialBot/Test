@@ -20,20 +20,20 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            background-color: var(--bg);
-            color: white;
-            height: 100vh;
-            display: flex;
-            flex-direction: column; /* Changed to column to stack Top Name and Container */
-            align-items: center;
-            justify-content: center;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            overflow: hidden;
-            perspective: 1000px;
-            background-image: 
-                radial-gradient(at 0% 0%, rgba(30, 58, 138, 0.3) 0, transparent 50%), 
-                radial-gradient(at 100% 100%, rgba(15, 23, 42, 1) 0, transparent 50%);
-        }
+    background-color: var(--bg);
+    color: white;
+    min-height: 100vh; /* Changed from height: 100vh */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* justify-content: center;  <-- REMOVE THIS LINE */
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    overflow-y: auto; /* Changed from hidden to allow scrolling */
+    perspective: 1000px;
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(30, 58, 138, 0.3) 0, transparent 50%), 
+        radial-gradient(at 100% 100%, rgba(15, 23, 42, 1) 0, transparent 50%);
+}
 
 
 
@@ -123,9 +123,10 @@
     --row-height: 32px;
   }
 
+
   .cmd-center {
     max-width: 500px;
-    margin: 50px auto;
+    margin: 20px auto;
     background: var(--bg-surface);
     padding: 24px;
     border: 1px solid #18181b;
@@ -134,6 +135,7 @@
     box-shadow: 0 30px 60px rgba(0,0,0,0.8);
   }
 
+        
   .stat-header {
     text-align: center;
     margin-bottom: 30px;
@@ -239,12 +241,17 @@
         
         /* --- NEW TOP BOT NAME SECTION --- */
         .page-header {
-            position: absolute;
-            top: 40px;
-            text-align: center;
-            width: 100%;
-            z-index: 100;
-        }
+    position: relative; /* Changed from absolute */
+    padding-top: 40px;
+    text-align: center;
+    width: 100%;
+    z-index: 100;
+}
+
+
+
+
+
 
         .page-header h1 {
             font-size: 24px;
@@ -258,12 +265,13 @@
         }
 
         .container {
-            width: 90%;
-            max-width: 380px;
-            transform-style: preserve-3d;
-            animation: cardFloat 5s ease-in-out infinite;
-            margin-top: 60px; /* Offset for the top header */
-        }
+    width: 90%;
+    max-width: 380px;
+    transform-style: preserve-3d;
+    animation: cardFloat 5s ease-in-out infinite;
+    margin-top: 20px; /* Reduced from 60px since header is relative now */
+    margin-bottom: 40px; /* Added space before footer */
+}
 
         @keyframes cardFloat {
             0%, 100% { transform: rotateY(-2deg) rotateX(2deg); }
