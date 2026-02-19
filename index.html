@@ -192,190 +192,135 @@
 
 
 
-
-
-
-.bot-info-panel {
-    margin-top: 20px;
-    padding: 20px !important;
-}
-
-.section-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 15px;
-    font-weight: 800;
-    font-size: 14px;
-    color: var(--accent);
-    letter-spacing: 2px;
-}
-
-.command-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.cmd-item {
-    background: rgba(0, 0, 0, 0.2);
-    padding: 10px;
-    border-radius: 10px;
-    border-left: 3px solid var(--accent);
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.cmd-trigger {
-    color: #fff;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    font-weight: 600;
-}
-
-.cmd-desc {
-    color: var(--text-dim);
-    font-size: 11px;
-}
-
-.bot-status-footer {
-    margin-top: 15px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--text-dim);
-}
-
-.status-dot {
-    width: 6px;
-    height: 6px;
-    background: #10b981; /* Green active state */
-    border-radius: 50%;
-    box-shadow: 0 0 8px #10b981;
-}
-
-
-
-
-
-
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=JetBrains+Mono:wght@300;500&display=swap');
 
   :root {
     --accent: #00e5ff;
     --bg-surface: #0a0a0b;
-    --text-dim: #52525b;
-    --row-height: 32px;
+    --text-dim: #45454a;
+    --row-height: 26px;
   }
 
   .cmd-center {
-    max-width: 500px;
-    margin: 50px auto;
+    max-width: 650px;
+    margin: 40px auto;
     background: var(--bg-surface);
-    padding: 24px;
-    border: 1px solid #18181b;
+    padding: 20px;
+    border: 1px solid #1c1c21;
     border-radius: 2px;
     font-family: 'Inter', sans-serif;
-    box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+    box-shadow: 0 40px 80px rgba(0,0,0,0.9);
   }
 
   .stat-header {
-    text-align: center;
-    margin-bottom: 30px;
-  }
-
-  .stat-glance {
-    display: inline-block;
-    position: relative;
+    text-align: left;
+    margin-bottom: 20px;
+    padding-left: 5px;
   }
 
   .stat-label {
     display: block;
-    font-size: 9px;
-    letter-spacing: 3px;
+    font-size: 8px;
+    letter-spacing: 4px;
     color: var(--text-dim);
-    margin-bottom: 4px;
+    margin-bottom: 2px;
   }
 
   .stat-value {
     margin: 0;
-    font-size: 56px;
+    font-size: 42px;
     font-weight: 800;
     color: #fff;
-    line-height: 1;
     font-family: 'JetBrains Mono', monospace;
   }
 
   .active-pulse {
-    width: 40px;
-    height: 2px;
-    background: var(--accent);
-    margin: 10px auto 0;
-    box-shadow: 0 0 10px var(--accent);
-    animation: breath 2s ease-in-out infinite;
-  }
-
-  @keyframes breath {
-    0%, 100% { opacity: 0.3; width: 20px; }
-    50% { opacity: 1; width: 50px; }
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+    margin-top: 8px;
+    opacity: 0.6;
   }
 
   .terminal-rect {
-    height: calc(var(--row-height) * 4);
+    height: calc(var(--row-height) * 5);
     overflow: hidden;
-    background: #0d0d0f;
-    border: 1px solid #1c1c21;
+    background: #080809;
+    border: 1px solid #16161a;
     position: relative;
+  }
+
+  .terminal-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,0.15) 0px, transparent 1px);
+    pointer-events: none;
+    z-index: 5;
   }
 
   .log-belt {
     display: flex;
     flex-direction: column;
-    transition: transform 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+    transition: transform 0.4s cubic-bezier(0.65, 0, 0.35, 1);
   }
 
   .log-entry {
     height: var(--row-height);
     display: flex;
     align-items: center;
-    padding: 0 15px;
+    padding: 0 12px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    border-bottom: 1px solid #16161a;
-    color: #a1a1aa;
+    font-size: 9.5px;
+    border-bottom: 1px solid #111114;
+    color: #71717a;
     white-space: nowrap;
-    background: linear-gradient(90deg, rgba(0, 229, 255, 0.03) 0%, rgba(0,0,0,0) 100%);
   }
 
-  .log-entry .ts { color: var(--text-dim); margin-right: 15px; }
+  .log-entry .ts { color: #3f3f46; margin-right: 15px; font-weight: 300; }
   
-  /* Blur styling for the ID */
-  .id-container { color: #fff; flex-grow: 1; display: flex; align-items: center; }
-  .blur-text { 
-    filter: blur(4px); 
-    background: rgba(255,255,255,0.1); 
-    padding: 0 2px;
-    margin: 0 2px;
-    user-select: none;
+  .id-container { 
+    color: #a1a1aa; 
+    flex-grow: 1; 
+    display: flex; 
+    align-items: center;
+    text-transform: uppercase;
   }
 
-  .log-entry .mark { color: var(--accent); font-weight: bold; margin-right: 10px; }
+  .blur-box { 
+    filter: blur(4px); 
+    background: rgba(255,255,255,0.05);
+    margin: 0 4px;
+    padding: 0 2px;
+    color: #fff;
+    letter-spacing: -1px;
+  }
 
-  .terminal-footer {
-    margin-top: 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 8px;
-    color: var(--text-dim);
+  .log-entry .mark { color: var(--accent); margin-right: 10px; opacity: 0.8; }
+
+  .status-tag {
+    font-size: 7px;
+    color: #22c55e;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    padding: 1px 5px;
     letter-spacing: 1px;
   }
 
-  .line-path { height: 1px; flex-grow: 1; background: #1c1c21; margin-right: 15px; }
+  .terminal-footer {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 7px;
+    color: #333;
+    letter-spacing: 2px;
+  }
+
+  .line-path { height: 1px; flex-grow: 1; background: #16161a; margin-right: 15px; }
 
 
 
+
+        
 
 
 
@@ -408,13 +353,14 @@
   </div>
 
   <div class="terminal-rect">
+    <div class="terminal-overlay"></div>
     <div id="scrollContainer" class="log-belt">
       </div>
   </div>
   
   <div class="terminal-footer">
     <span class="line-path"></span>
-    <span class="status-msg">ENCRYPTED_FEED_ACTIVE</span>
+    <span class="status-msg">STRM_ACTIVE // ENCRYPTED_FEED</span>
   </div>
 </div>
 
@@ -542,9 +488,10 @@
 
 
 
+<script>
 (function() {
     const URL = 'https://fypvbnjiyioodzoqqhsd.supabase.co';
-    const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ5cHZibmppeWlvb2R6b3FxaHNkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NjEyMTU3OCwiZXhwIjoyMDgxNjk3NTc4fQ.gIS6u37I_Yal_2ok6qWpTe_U_5GzTUr-viDVvq71kZg';
+    const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ5cHZibmppeWlvb2R6b3FxaHNkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NjEyMTU3OCwiZXhwIjoyMDgyMTk2MTcyfQ.gIS6u37I_Yal_2ok6qWpTe_U_5GzTUr-viDVvq71kZg';
     const BKT = 'Flexa-Lite';
 
     const countEl = document.getElementById('totalCount');
@@ -553,53 +500,61 @@
     let logs = [];
     let idx = 0;
     let offset = 0;
-    const ROW_H = 32;
+    const ROW_H = 26;
 
     async function fetchDB() {
         try {
             const res = await fetch(`${URL}/storage/v1/object/list/${BKT}`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${KEY}`, 'apikey': KEY, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ prefix: 'sessions/', limit: 100 })
+                body: JSON.stringify({ prefix: '', limit: 100 })
             });
             const data = await res.json();
+            
             if (Array.isArray(data)) {
-                logs = data.filter(f => f.name !== ".emptyFolderPlaceholder")
-                            .map(f => f.name.replace('sessions/', '').replace('.json', ''));
-                countEl.innerText = logs.length;
-                if (logs.length > 0 && belt.children.length === 0) start();
+                const rawLogs = data
+                    .filter(f => f.name !== ".emptyFolderPlaceholder" && !f.name.endsWith('/'))
+                    .map(f => f.name.replace('sessions/', '').replace('.json', ''));
+                
+                if (rawLogs.length > 0) {
+                    logs = rawLogs;
+                    countEl.innerText = logs.length;
+                    if (belt.children.length === 0) start();
+                }
             }
-        } catch (e) { console.log("RECONNECTING..."); }
+        } catch (e) { 
+            console.error("CONN_LOST: Retrying..."); 
+        }
     }
 
     function createRow(val) {
         const row = document.createElement('div');
         row.className = 'log-entry';
-        const time = new Date().toLocaleTimeString([], {hour12:false, hour:'2-digit', minute:'2-digit', second:'2-digit'});
+        const time = new Date().toLocaleTimeString('en-GB', {hour12:false});
         
-        // Split ID to blur middle 4 characters
-        const str = String(val);
-        let idHtml = '';
-        if (str.length > 6) {
-          const part1 = str.substring(0, 3);
-          const middle = str.substring(3, 7);
-          const part2 = str.substring(7);
-          idHtml = `<span>${part1}</span><span class="blur-text">${middle}</span><span>${part2}</span>`;
+        const fullId = String(val);
+        let formattedId = '';
+        
+        if (fullId.length > 6) {
+            const head = fullId.slice(0, 3);
+            const middle = fullId.slice(3, 7);
+            const tail = fullId.slice(7);
+            formattedId = `${head}<span class="blur-box">${middle}</span>${tail}`;
         } else {
-          idHtml = `<span>${str}</span>`;
+            formattedId = fullId;
         }
 
         row.innerHTML = `
             <span class="mark">»</span>
-            <span class="ts">${time}</span>
-            <span class="id-container">ID: ${idHtml}</span>
-            <span style="color:#22c55e; font-size:9px; letter-spacing:1px">● ONLINE</span>
+            <span class="ts">[${time}]</span>
+            <span class="id-container">node_auth//${formattedId}</span>
+            <span class="status-tag">ESTABLISHED</span>
         `;
         return row;
     }
 
     function start() {
-        for(let i=0; i<6; i++) {
+        for(let i=0; i<8; i++) {
             belt.appendChild(createRow(logs[i % logs.length]));
         }
         slide();
@@ -609,22 +564,28 @@
         if (logs.length === 0) return;
         offset -= ROW_H;
         belt.style.transform = `translateY(${offset}px)`;
+        
         setTimeout(() => {
             belt.removeChild(belt.firstElementChild);
             idx = (idx + 1) % logs.length;
             belt.appendChild(createRow(logs[idx]));
+            
             belt.style.transition = 'none';
             offset += ROW_H;
             belt.style.transform = `translateY(${offset}px)`;
+            
             belt.offsetHeight; 
-            belt.style.transition = 'transform 0.5s cubic-bezier(0.65, 0, 0.35, 1)';
-        }, 500);
-        setTimeout(slide, 2800);
+            belt.style.transition = 'transform 0.4s cubic-bezier(0.65, 0, 0.35, 1)';
+        }, 400);
+
+        setTimeout(slide, 2400);
     }
 
     fetchDB();
-    setInterval(fetchDB, 30000);
+    setInterval(fetchDB, 20000);
 })();
+</script>
+
 
 
 
