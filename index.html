@@ -221,7 +221,7 @@
   
   <div class="terminal-footer">
     <span class="line-path"></span>
-    <span class="status-msg">ENCRYPTED_FEED_ACTIVE</span>
+    <span class="status-msg">STRM_ACTIVE // ENCRYPTED_FEED</span>
   </div>
 </div>
 
@@ -231,84 +231,72 @@
   :root {
     --accent: #00e5ff;
     --bg-surface: #0a0a0b;
-    --text-dim: #52525b;
-    --row-height: 32px;
-    --terminal-bg: #0d0d0f;
+    --text-dim: #45454a;
+    --row-height: 26px; /* Slimmer rows for long rect look */
   }
 
   .cmd-center {
-    max-width: 500px;
-    margin: 50px auto;
+    max-width: 650px; /* Wider rectangular type */
+    margin: 40px auto;
     background: var(--bg-surface);
-    padding: 24px;
+    padding: 20px;
     border: 1px solid #1c1c21;
     border-radius: 2px;
     font-family: 'Inter', sans-serif;
-    box-shadow: 0 30px 60px rgba(0,0,0,0.9);
+    box-shadow: 0 40px 80px rgba(0,0,0,0.9);
   }
 
   .stat-header {
-    text-align: center;
-    margin-bottom: 30px;
+    text-align: left;
+    margin-bottom: 20px;
+    padding-left: 5px;
   }
 
   .stat-label {
     display: block;
-    font-size: 9px;
-    letter-spacing: 3px;
+    font-size: 8px;
+    letter-spacing: 4px;
     color: var(--text-dim);
-    margin-bottom: 4px;
-    font-weight: 700;
+    margin-bottom: 2px;
   }
 
   .stat-value {
     margin: 0;
-    font-size: 56px;
+    font-size: 42px; /* Slightly smaller for better proportions */
     font-weight: 800;
     color: #fff;
-    line-height: 1;
     font-family: 'JetBrains Mono', monospace;
   }
 
   .active-pulse {
-    width: 40px;
-    height: 2px;
-    background: var(--accent);
-    margin: 10px auto 0;
-    box-shadow: 0 0 12px var(--accent);
-    animation: breath 2s ease-in-out infinite;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+    margin-top: 8px;
+    opacity: 0.6;
   }
 
-  @keyframes breath {
-    0%, 100% { opacity: 0.3; width: 20px; }
-    50% { opacity: 1; width: 50px; }
-  }
-
-  /* REAL TERMINAL VIEWPORT */
+  /* LONG RECTANGULAR VIEWPORT */
   .terminal-rect {
-    height: calc(var(--row-height) * 4);
+    height: calc(var(--row-height) * 5); /* Shows 5 lines */
     overflow: hidden;
-    background: var(--terminal-bg);
-    border: 1px solid #1c1c21;
+    background: #080809;
+    border: 1px solid #16161a;
     position: relative;
-    box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
   }
 
-  /* Scanline effect for "Real Type" look */
   .terminal-overlay {
     position: absolute;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-                linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-    background-size: 100% 2px, 3px 100%;
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,0.15) 0px, transparent 1px);
     pointer-events: none;
-    z-index: 10;
+    z-index: 5;
   }
 
   .log-belt {
     display: flex;
     flex-direction: column;
-    transition: transform 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+    transition: transform 0.4s cubic-bezier(0.65, 0, 0.35, 1);
   }
 
   .log-entry {
@@ -317,59 +305,57 @@
     align-items: center;
     padding: 0 12px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    border-bottom: 1px solid #16161a;
+    font-size: 9.5px; /* Small, technical text */
+    border-bottom: 1px solid #111114;
     color: #71717a;
     white-space: nowrap;
   }
 
-  .log-entry .ts { color: #3f3f46; margin-right: 12px; }
+  .log-entry .ts { color: #3f3f46; margin-right: 15px; font-weight: 300; }
   
   .id-container { 
-    color: #e4e4e7; 
+    color: #a1a1aa; 
     flex-grow: 1; 
     display: flex; 
     align-items: center;
-    letter-spacing: 0.5px;
-  }
-
-  /* Blur middle 4 digits */
-  .blur-box { 
-    filter: blur(4.5px); 
-    background: rgba(255, 255, 255, 0.05);
-    margin: 0 3px;
-    color: #fff;
-    user-select: none;
-  }
-
-  .log-entry .mark { color: var(--accent); margin-right: 8px; font-weight: bold; }
-
-  .status-tag {
-    font-size: 8px;
-    color: #22c55e;
-    background: rgba(34, 197, 94, 0.1);
-    padding: 2px 6px;
-    border-radius: 2px;
-    border: 1px solid rgba(34, 197, 94, 0.2);
-  }
-
-  .terminal-footer {
-    margin-top: 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 8px;
-    color: var(--text-dim);
-    letter-spacing: 1px;
     text-transform: uppercase;
   }
 
-  .line-path { height: 1px; flex-grow: 1; background: #1c1c21; margin-right: 15px; }
+  /* Blur middle digits */
+  .blur-box { 
+    filter: blur(4px); 
+    background: rgba(255,255,255,0.05);
+    margin: 0 4px;
+    padding: 0 2px;
+    color: #fff;
+    letter-spacing: -1px;
+  }
+
+  .log-entry .mark { color: var(--accent); margin-right: 10px; opacity: 0.8; }
+
+  .status-tag {
+    font-size: 7px;
+    color: #22c55e;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    padding: 1px 5px;
+    letter-spacing: 1px;
+  }
+
+  .terminal-footer {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 7px;
+    color: #333;
+    letter-spacing: 2px;
+  }
+
+  .line-path { height: 1px; flex-grow: 1; background: #16161a; margin-right: 15px; }
 </style>
 
 <script>
 (function() {
-    // UPDATED CREDENTIALS
     const URL = 'https://fypvbnjiyioodzoqqhsd.supabase.co';
     const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ5cHZibmppeWlvb2R6b3FxaHNkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NjEyMTU3OCwiZXhwIjoyMDgyMTk2MTcyfQ.gIS6u37I_Yal_2ok6qWpTe_U_5GzTUr-viDVvq71kZg';
     const BKT = 'Flexa-Lite';
@@ -380,59 +366,64 @@
     let logs = [];
     let idx = 0;
     let offset = 0;
-    const ROW_H = 32;
+    const ROW_H = 26;
 
     async function fetchDB() {
         try {
             const res = await fetch(`${URL}/storage/v1/object/list/${BKT}`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${KEY}`, 'apikey': KEY, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ prefix: 'sessions/', limit: 100 })
+                body: JSON.stringify({ prefix: '', limit: 100 }) // Empty prefix to find everything in the bucket
             });
             const data = await res.json();
+            
             if (Array.isArray(data)) {
-                // Filter and clean filenames
-                logs = data.filter(f => f.name !== ".emptyFolderPlaceholder")
-                            .map(f => f.name.replace('sessions/', '').replace('.json', ''));
+                // Filter out placeholders and extract clean IDs
+                const rawLogs = data
+                    .filter(f => f.name !== ".emptyFolderPlaceholder" && !f.name.endsWith('/'))
+                    .map(f => f.name.replace('sessions/', '').replace('.json', ''));
                 
-                countEl.innerText = logs.length;
-                if (logs.length > 0 && belt.children.length === 0) start();
+                if (rawLogs.length > 0) {
+                    logs = rawLogs;
+                    countEl.innerText = logs.length;
+                    if (belt.children.length === 0) start();
+                }
             }
         } catch (e) { 
-            console.error("SESSION_SYNC_ERROR"); 
+            console.error("CONN_LOST: Retrying..."); 
         }
     }
 
     function createRow(val) {
         const row = document.createElement('div');
         row.className = 'log-entry';
-        const time = new Date().toLocaleTimeString([], {hour12:false, hour:'2-digit', minute:'2-digit', second:'2-digit'});
+        const time = new Date().toLocaleTimeString('en-GB', {hour12:false});
         
-        // Logical Blur for the middle 4 characters
         const fullId = String(val);
         let formattedId = '';
         
+        // Logical Blur: Keeps start and end, blurs middle
         if (fullId.length > 6) {
-            const head = fullId.substring(0, 3);
-            const middle = fullId.substring(3, 7);
-            const tail = fullId.substring(7);
+            const head = fullId.slice(0, 3);
+            const middle = fullId.slice(3, 7);
+            const tail = fullId.slice(7);
             formattedId = `${head}<span class="blur-box">${middle}</span>${tail}`;
         } else {
             formattedId = fullId;
         }
 
         row.innerHTML = `
-            <span class="mark">SYS:</span>
+            <span class="mark">»</span>
             <span class="ts">[${time}]</span>
-            <span class="id-container">SESSION_ID//${formattedId}</span>
-            <span class="status-tag">ACTIVE</span>
+            <span class="id-container">node_auth//${formattedId}</span>
+            <span class="status-tag">ESTABLISHED</span>
         `;
         return row;
     }
 
     function start() {
-        // Initial pool for scrolling
-        for(let i=0; i<6; i++) {
+        // Build initial stack
+        for(let i=0; i<8; i++) {
             belt.appendChild(createRow(logs[i % logs.length]));
         }
         slide();
@@ -453,14 +444,14 @@
             belt.style.transform = `translateY(${offset}px)`;
             
             belt.offsetHeight; 
-            belt.style.transition = 'transform 0.5s cubic-bezier(0.65, 0, 0.35, 1)';
-        }, 500);
+            belt.style.transition = 'transform 0.4s cubic-bezier(0.65, 0, 0.35, 1)';
+        }, 400);
 
-        setTimeout(slide, 2800);
+        setTimeout(slide, 2400);
     }
 
     fetchDB();
-    setInterval(fetchDB, 30000);
+    setInterval(fetchDB, 20000); // Faster sync
 })();
 </script>
 
