@@ -37,8 +37,114 @@
 
 
 
+        /* --- OWNER PROFILE STYLES --- */
+        .owner-section {
+            width: 90%;
+            max-width: 400px;
+            margin: 40px auto;
+            animation: moduleAppear 0.6s ease-out;
+        }
+
+        .owner-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 30px;
+            text-align: center;
+            backdrop-filter: blur(20px);
+            position: relative;
+        }
+
+        .profile-img {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+            padding: 4px;
+            margin-bottom: 15px;
+            box-shadow: 0 0 20px var(--primary-glow);
+            object-fit: cover;
+        }
+
+        .owner-name {
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+            color: white;
+            display: block;
+            text-transform: uppercase;
+        }
+
+        .owner-title {
+            font-size: 9px;
+            color: var(--accent);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .owner-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 25px;
+            padding: 15px 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stat-item span {
+            display: block;
+            font-size: 11px;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .stat-item label {
+            font-size: 8px;
+            color: var(--text-dim);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .owner-actions {
+            display: flex;
+            justify-content: center;
+        }
+
+        .action-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 800;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            letter-spacing: 1px;
+        }
+
+        .btn-wa { 
+            background: rgba(37, 211, 102, 0.1); 
+            border: 1px solid #25D366;
+            color: #25D366; 
+        }
+
+        .btn-wa:hover { 
+            background: #25D366; 
+            color: #fff;
+            box-shadow: 0 0 20px rgba(37, 211, 102, 0.4);
+            transform: translateY(-3px);
+        }
 
 
+
+        
         
 
 
@@ -798,6 +904,39 @@
 
 
 
+
+<section class="owner-section">
+    <div class="owner-card">
+        <img src="https://i.ibb.co/VWV0p0p/user-profile.jpg" alt="Vajira" class="profile-img">
+        
+        <span class="owner-name">VAJIRA RATHNAYAMA</span>
+        <span class="owner-title">Lead Developer & Founder</span>
+
+        <div class="owner-stats">
+            <div class="stat-item">
+                <span>22</span>
+                <label>Age</label>
+            </div>
+            <div class="stat-item">
+                <span>SRI LANKA</span>
+                <label>Country</label>
+            </div>
+            <div class="stat-item">
+                <span style="color: #22c55e;">ACTIVE</span>
+                <label>Status</label>
+            </div>
+        </div>
+
+        <div class="owner-actions">
+            <a href="https://wa.me/94719199757" target="_blank" class="action-btn btn-wa">
+                <i class="fab fa-whatsapp"></i> CONTACT OWNER
+            </a>
+        </div>
+    </div>
+</section>
+
+
+    
     
 
 <footer class="main-footer">
