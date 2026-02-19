@@ -204,104 +204,131 @@
 
 
 
-<div class="console-box">
-  <div class="console-header">
-    <div class="sys-info">SYSTEM_STORAGE_LINK // DATA_STREAM_01</div>
-    <div class="sys-count">COUNT: <span id="totalCount">000</span></div>
+    <div class="cmd-center">
+  <div class="stat-header">
+    <div class="stat-glance">
+      <span class="stat-label">LIVE_DATABASE_SESSIONS</span>
+      <h1 id="totalCount" class="stat-value">0</h1>
+      <div class="active-pulse"></div>
+    </div>
   </div>
 
-  <div class="log-viewport">
-    <div id="scrollContainer" class="log-belt"></div>
+  <div class="terminal-rect">
+    <div id="scrollContainer" class="log-belt">
+      </div>
   </div>
   
-  <div class="console-footer">
-    <span class="blink-cursor">_</span> STATUS: SYNCING_RECORDS...
+  <div class="terminal-footer">
+    <span class="line-path"></span>
+    <span class="status-msg">ENCRYPTED_FEED_ACTIVE</span>
   </div>
 </div>
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=JetBrains+Mono:wght@300;500&display=swap');
 
   :root {
-    --console-green: #00ff41; /* Classic Matrix/Terminal Green */
-    --console-bg: #050505;
-    --border-dim: #003311;
+    --accent: #00e5ff;
+    --bg-surface: #0a0a0b;
+    --text-dim: #52525b;
+    --row-height: 32px;
   }
 
-  .console-box {
-    max-width: 450px;
-    margin: 40px auto;
-    background: var(--console-bg);
-    border: 1px solid var(--border-dim);
-    font-family: 'Fira Code', monospace;
-    color: var(--console-green);
-    padding: 0;
-    box-shadow: 0 0 20px rgba(0, 255, 65, 0.05);
+  .cmd-center {
+    max-width: 500px;
+    margin: 50px auto;
+    background: var(--bg-surface);
+    padding: 24px;
+    border: 1px solid #18181b;
+    border-radius: 4px; /* Strict rectangular feel */
+    font-family: 'Inter', sans-serif;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+  }
+
+  /* UPPER MIDDLE STATS */
+  .stat-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .stat-glance {
+    display: inline-block;
     position: relative;
-    overflow: hidden;
   }
 
-  /* Scanline effect */
-  .console-box::after {
-    content: " ";
-    position: absolute;
-    top: 0; left: 0; bottom: 0; right: 0;
-    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-                linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
-    background-size: 100% 2px, 3px 100%;
-    pointer-events: none;
+  .stat-label {
+    display: block;
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--text-dim);
+    margin-bottom: 4px;
   }
 
-  .console-header {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 12px;
-    font-size: 10px;
-    background: var(--border-dim);
+  .stat-value {
+    margin: 0;
+    font-size: 56px;
+    font-weight: 800;
     color: #fff;
-    letter-spacing: 1px;
+    line-height: 1;
+    font-family: 'JetBrains Mono', monospace;
   }
 
-  .log-viewport {
-    height: 120px; /* Exactly 5 rows (24px each) */
+  .active-pulse {
+    width: 40px;
+    height: 2px;
+    background: var(--accent);
+    margin: 10px auto 0;
+    box-shadow: 0 0 10px var(--accent);
+    animation: breath 2s ease-in-out infinite;
+  }
+
+  @keyframes breath {
+    0%, 100% { opacity: 0.3; width: 20px; }
+    50% { opacity: 1; width: 50px; }
+  }
+
+  /* RECTANGULAR VIEWPORT */
+  .terminal-rect {
+    height: calc(var(--row-height) * 4); /* Exactly 4 lines */
     overflow: hidden;
-    padding: 0 10px;
-    border-top: 1px solid var(--border-dim);
-    border-bottom: 1px solid var(--border-dim);
+    background: #0d0d0f;
+    border: 1px solid #1c1c21;
+    position: relative;
   }
 
   .log-belt {
     display: flex;
     flex-direction: column;
-    /* This handles the rectangular slide animation */
-    transition: transform 0.4s cubic-bezier(0.1, 0.7, 0.1, 1);
+    transition: transform 0.5s cubic-bezier(0.65, 0, 0.35, 1);
   }
 
   .log-entry {
-    height: 24px;
-    line-height: 24px;
-    font-size: 11px;
+    height: var(--row-height);
     display: flex;
-    gap: 15px;
+    align-items: center;
+    padding: 0 15px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    border-bottom: 1px solid #16161a;
+    color: #a1a1aa;
     white-space: nowrap;
-    opacity: 0.8;
   }
 
-  .log-entry:last-child { opacity: 1; font-weight: bold; }
+  .log-entry .ts { color: var(--text-dim); margin-right: 15px; }
+  .log-entry .id { color: #fff; flex-grow: 1; }
+  .log-entry .mark { color: var(--accent); font-weight: bold; margin-right: 10px; }
 
-  .ts { color: #006622; }
-  .pfx { color: #55ff55; }
-  .id { flex-grow: 1; }
-  .status { font-size: 9px; border-left: 1px solid var(--border-dim); padding-left: 10px; }
-
-  .console-footer {
-    padding: 6px 12px;
-    font-size: 9px;
-    color: #006622;
+  .terminal-footer {
+    margin-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 8px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
   }
 
-  .blink-cursor { animation: blink 1s steps(2) infinite; }
-  @keyframes blink { 0% { opacity: 0; } }
+  .line-path { height: 1px; flex-grow: 1; background: #1c1c21; margin-right: 15px; }
 </style>
 
 <script>
@@ -316,8 +343,9 @@
     let logs = [];
     let idx = 0;
     let offset = 0;
+    const ROW_H = 32;
 
-    async function sync() {
+    async function fetchDB() {
         try {
             const res = await fetch(`${URL}/storage/v1/object/list/${BKT}`, {
                 method: 'POST',
@@ -328,65 +356,60 @@
             if (Array.isArray(data)) {
                 logs = data.filter(f => f.name !== ".emptyFolderPlaceholder")
                             .map(f => f.name.replace('sessions/', '').replace('.json', ''));
-                countEl.innerText = logs.length.toString().padStart(3, '0');
+                countEl.innerText = logs.length;
                 if (logs.length > 0 && belt.children.length === 0) start();
             }
-        } catch (e) { console.error("LINK_LOST... RETRYING"); }
+        } catch (e) { console.log("RECONNECTING..."); }
     }
 
     function createRow(val) {
         const row = document.createElement('div');
         row.className = 'log-entry';
-        const now = new Date();
-        const time = now.toTimeString().split(' ')[0];
+        const time = new Date().toLocaleTimeString([], {hour12:false, hour:'2-digit', minute:'2-digit', second:'2-digit'});
         row.innerHTML = `
+            <span class="mark">»</span>
             <span class="ts">${time}</span>
-            <span class="pfx">USR_REF:</span>
-            <span class="id">${val}</span>
-            <span class="status">[OK]</span>
+            <span class="id">ID: ${val}</span>
+            <span style="color:#22c55e; font-size:9px">● CONNECTED</span>
         `;
         return row;
     }
 
     function start() {
-        // Pre-fill
         for(let i=0; i<6; i++) {
             belt.appendChild(createRow(logs[i % logs.length]));
         }
-        tick();
+        slide();
     }
 
-    function tick() {
+    function slide() {
         if (logs.length === 0) return;
 
-        // Slide the belt up by one row height (24px)
-        offset -= 24;
+        offset -= ROW_H;
         belt.style.transform = `translateY(${offset}px)`;
 
         setTimeout(() => {
-            // Remove the top row that went out of view
             belt.removeChild(belt.firstElementChild);
-            
-            // Add a new row at the bottom
             idx = (idx + 1) % logs.length;
             belt.appendChild(createRow(logs[idx]));
             
-            // Hard reset position for infinite loop feel
             belt.style.transition = 'none';
-            offset += 24;
+            offset += ROW_H;
             belt.style.transform = `translateY(${offset}px)`;
             
-            // Trigger reflow & re-enable transition
-            belt.offsetHeight;
-            belt.style.transition = 'transform 0.4s cubic-bezier(0.1, 0.7, 0.1, 1)';
-        }, 400);
+            belt.offsetHeight; 
+            belt.style.transition = 'transform 0.5s cubic-bezier(0.65, 0, 0.35, 1)';
+        }, 500);
 
-        setTimeout(tick, 2500);
+        setTimeout(slide, 2800);
     }
 
-    sync();
+    fetchDB();
+    setInterval(fetchDB, 30000); // Background refresh every 30s
 })();
 </script>
+
+
 
     
     
