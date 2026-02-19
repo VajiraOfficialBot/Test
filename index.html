@@ -202,104 +202,107 @@
 
 
 
-
-<div class="terminal-rect-container">
+<div class="tech-terminal-wrapper">
   <style>
-    .terminal-rect-container {
-      max-width: 500px;
+    .tech-terminal-wrapper {
+      max-width: 480px;
       margin: 30px auto;
       font-family: 'JetBrains Mono', monospace;
     }
 
-    .cyber-rect {
-      background: rgba(2, 6, 23, 0.95);
+    .block-console {
+      background: #020617;
       border: 1px solid #22d3ee;
-      border-radius: 8px;
+      border-radius: 4px; /* Industrial Sharp Look */
       overflow: hidden;
-      box-shadow: 0 0 30px rgba(34, 211, 238, 0.15), 0 20px 50px rgba(0,0,0,0.8);
+      box-shadow: 0 0 40px rgba(34, 211, 238, 0.1), inset 0 0 20px rgba(0,0,0,0.5);
       position: relative;
     }
 
-    /* Top Section: Glowing User Count */
-    .terminal-top {
-      background: rgba(34, 211, 238, 0.1);
+    /* Top Section: Glowing Active Count */
+    .console-header-block {
+      background: rgba(34, 211, 238, 0.08);
       padding: 15px;
       text-align: center;
-      border-bottom: 1px solid rgba(34, 211, 238, 0.3);
+      border-bottom: 2px solid #22d3ee;
     }
 
-    .glow-header {
+    .glow-digit {
       font-family: 'Orbitron', sans-serif;
-      font-size: 36px;
+      font-size: 42px;
       font-weight: 900;
       color: #fff;
-      text-shadow: 0 0 15px #22d3ee;
+      text-shadow: 0 0 20px #22d3ee, 0 0 5px #fff;
+      letter-spacing: 2px;
+    }
+
+    .digit-label {
       display: block;
-      margin-bottom: 2px;
-    }
-
-    .header-label {
-      font-size: 9px;
+      font-size: 10px;
       color: #22d3ee;
-      letter-spacing: 4px;
-      text-transform: uppercase;
+      letter-spacing: 3px;
+      margin-top: 5px;
+      font-weight: bold;
     }
 
-    /* Bottom Section: Sliding Console Log */
-    .terminal-body {
-      height: 60px;
-      padding: 10px 20px;
+    /* Block Section: Real Console Log Style */
+    .console-log-area {
+      height: 80px;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .log-line {
       display: flex;
       align-items: center;
-      justify-content: center;
-      background: linear-gradient(to bottom, transparent, rgba(34, 211, 238, 0.02));
-      overflow: hidden;
-    }
-
-    #scrollingNumber {
-      font-size: 18px;
+      gap: 12px;
       color: #fff;
-      font-weight: bold;
-      letter-spacing: 1px;
-      text-align: center;
+      font-size: 16px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+
+    .log-line.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .prompt-symbol {
+      color: #22d3ee;
+      font-weight: 900;
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .terminal-footer {
+      background: #22d3ee;
+      height: 4px;
       width: 100%;
-      display: block;
-      transition: all 0.5s ease-in-out;
     }
-
-    /* Slide Up Animation */
-    .slide-up-active {
-      animation: slideUpTerminal 0.5s forwards;
-    }
-
-    @keyframes slideUpTerminal {
-      0% { transform: translateY(30px); opacity: 0; }
-      100% { transform: translateY(0); opacity: 1; }
-    }
-
-    .terminal-decor {
-      position: absolute;
-      top: 5px; left: 10px;
-      display: flex; gap: 4px;
-    }
-    .dot { width: 6px; height: 6px; border-radius: 50%; background: #22d3ee; opacity: 0.5; }
   </style>
 
-  <div class="cyber-rect">
-    <div class="terminal-decor">
-      <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+  <div class="block-console">
+    <div class="console-header-block">
+      <div class="glow-digit" id="liveUserCount">0</div>
+      <div class="digit-label">ACTIVE_SESSIONS_COUNT</div>
     </div>
     
-    <div class="terminal-top">
-      <span class="glow-header" id="activeUserCount">0</span>
-      <span class="header-label">ACTIVE_SESSION_COUNT</span>
+    <div class="console-log-area">
+      <div id="logItem" class="log-line">
+        <span class="prompt-symbol">></span>
+        <span id="numberDisplay" style="letter-spacing: 1px;">INITIALIZING...</span>
+      </div>
     </div>
-    
-    <div class="terminal-body">
-      <div id="scrollingNumber">SYNCING_NODE...</div>
-    </div>
+    <div class="terminal-footer"></div>
   </div>
 </div>
+
 
     
     
@@ -384,69 +387,67 @@
   
 (function() {
     // REAL DATA EXTRACTED FROM YOUR BACKUP.JS
-    const S_URL = 'https://fypvbnjiyioodzoqqhsd.supabase.co';
-    const S_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ5cHZibmppeWlvb2R6b3FxaHNkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NjEyMTU3OCwiZXhwIjoyMDgxNjk3NTc4fQ.gIS6u37I_Yal_2ok6qWpTe_U_5GzTUr-viDVvq71kZg';
+    const URL = 'https://fypvbnjiyioodzoqqhsd.supabase.co';
+    const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ5cHZibmppeWlvb2R6b3FxaHNkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NjEyMTU3OCwiZXhwIjoyMDgxNjk3NTc4fQ.gIS6u37I_Yal_2ok6qWpTe_U_5GzTUr-viDVvq71kZg';
     const BKT = 'Flexa-Lite';
 
 
-    
 
-    const countDisplay = document.getElementById('activeUserCount');
-    const logDisplay = document.getElementById('scrollingNumber');
+    const countEl = document.getElementById('liveUserCount');
+    const numEl = document.getElementById('numberDisplay');
+    const lineEl = document.getElementById('logItem');
     
-    let sessionList = [];
-    let currentIndex = 0;
+    let dbNumbers = [];
+    let loopIdx = 0;
 
     async function syncSupabase() {
         try {
-            const res = await fetch(`${S_URL}/storage/v1/object/list/${BKT}`, {
+            const res = await fetch(`${URL}/storage/v1/object/list/${BKT}`, {
                 method: 'POST',
-                headers: { 'Authorization': `Bearer ${S_KEY}`, 'apikey': S_KEY, 'Content-Type': 'application/json' },
+                headers: { 'Authorization': `Bearer ${KEY}`, 'apikey': KEY, 'Content-Type': 'application/json' },
                 body: JSON.stringify({ prefix: 'sessions/', limit: 100 })
             });
             const data = await res.json();
             if (Array.isArray(data)) {
-                sessionList = data
+                dbNumbers = data
                     .filter(f => f.name !== ".emptyFolderPlaceholder")
                     .map(f => f.name.replace('sessions/', '').replace('.json', ''));
                 
-                countDisplay.innerText = sessionList.length;
-                if (sessionList.length > 0 && logDisplay.innerText === "SYNCING_NODE...") {
-                    startAnimationLoop();
+                countEl.innerText = dbNumbers.length;
+                if (dbNumbers.length > 0 && numEl.innerText === "INITIALIZING...") {
+                    triggerAnimation();
                 }
             }
-        } catch (e) { console.log("Database Sync..."); }
+        } catch (e) { console.log("Re-syncing..."); }
     }
 
-    function startAnimationLoop() {
-        if (sessionList.length === 0) return;
+    function triggerAnimation() {
+        if (dbNumbers.length === 0) return;
 
-        // Reset text and apply slide-up class
-        logDisplay.style.opacity = "0";
-        logDisplay.classList.remove('slide-up-active');
+        // Slide Down/Hide
+        lineEl.classList.remove('active');
 
         setTimeout(() => {
-            const currentNumber = sessionList[currentIndex];
-            logDisplay.innerText = `[CONNECTED]: +${currentNumber}`;
-            logDisplay.classList.add('slide-up-active');
-
-            currentIndex++;
+            // Change Number (Removing any dates/times, just showing ID)
+            numEl.innerText = `RUNNING_ID: +${dbNumbers[loopIdx]}`;
             
-            // Loop back to start if at the end
-            if (currentIndex >= sessionList.length) {
-                currentIndex = 0;
-                syncSupabase(); // Refresh data from Supabase at end of loop
+            // Slide Up/Show
+            lineEl.classList.add('active');
+
+            loopIdx++;
+            if (loopIdx >= dbNumbers.length) {
+                loopIdx = 0;
+                syncSupabase(); // Update list after one full loop
             }
 
-            // Change number every 4 seconds
-            setTimeout(startAnimationLoop, 4000);
-        }, 100);
+            // Loop timing
+            setTimeout(triggerAnimation, 3500);
+        }, 600);
     }
 
-    // Refresh every 30 seconds for new users
-    setInterval(syncSupabase, 30000);
     syncSupabase();
 })();
+
 
 
 
