@@ -203,9 +203,9 @@
 
 
 
-<div class="cyber-console-container">
+<div class="cyber-terminal-container">
   <style>
-    .cyber-console-container {
+    .cyber-terminal-container {
       max-width: 450px;
       margin: 25px auto;
       perspective: 1500px;
@@ -218,30 +218,37 @@
       border-radius: 12px;
       padding: 0;
       overflow: hidden;
-      transform: rotateX(8deg);
-      box-shadow: 0 0 20px rgba(34, 211, 238, 0.2), 0 25px 50px rgba(0,0,0,0.9);
+      transform: rotateX(5deg);
+      box-shadow: 0 0 25px rgba(34, 211, 238, 0.2), 0 25px 50px rgba(0,0,0,0.9);
       position: relative;
     }
 
+    /* Window Header Controls */
     .terminal-header {
-      background: rgba(34, 211, 238, 0.1);
+      background: rgba(34, 211, 238, 0.15);
       padding: 10px 15px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       border-bottom: 1px solid rgba(34, 211, 238, 0.3);
     }
-
-    .dot-group { display: flex; gap: 6px; }
+    .dots { display: flex; gap: 6px; }
     .dot { width: 10px; height: 10px; border-radius: 50%; }
-    .dot.red { background: #ff5f56; }
-    .dot.yellow { background: #ffbd2e; }
-    .dot.green { background: #27c93f; }
+    .red { background: #ff5f56; } .yellow { background: #ffbd2e; } .green { background: #27c93f; }
 
+    .terminal-title {
+      font-size: 10px;
+      color: #22d3ee;
+      font-weight: 800;
+      letter-spacing: 2px;
+    }
+
+    /* Main Content Area */
     .main-display {
       padding: 30px 20px;
       text-align: center;
-      background: radial-gradient(circle at center, rgba(34, 211, 238, 0.05) 0%, transparent 70%);
+      background: radial-gradient(circle at center, rgba(34, 211, 238, 0.05) 0%, transparent 80%);
+      position: relative;
     }
 
     #activeNumberDisplay {
@@ -249,62 +256,60 @@
       font-size: 32px;
       color: #fff;
       text-shadow: 0 0 15px #22d3ee;
-      margin: 15px 0;
-      letter-spacing: 2px;
-      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      margin: 10px 0;
+      transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+      min-height: 45px;
     }
 
     .stats-footer {
       background: rgba(0,0,0,0.6);
-      padding: 12px;
+      padding: 15px;
       display: flex;
       justify-content: space-around;
       border-top: 1px solid rgba(34, 211, 238, 0.2);
     }
 
-    .stat-mini { text-align: center; }
-    .stat-mini-val { color: #fff; font-weight: bold; font-size: 14px; }
-    .stat-mini-lbl { color: #22d3ee; font-size: 8px; text-transform: uppercase; letter-spacing: 1px; }
+    .stat-box { text-align: center; }
+    .stat-val { color: #fff; font-weight: bold; font-size: 16px; display: block; }
+    .stat-lbl { color: #22d3ee; font-size: 8px; text-transform: uppercase; letter-spacing: 1px; }
 
-    .glitch-line {
-      position: absolute;
-      width: 100%;
-      height: 1px;
-      background: rgba(34, 211, 238, 0.2);
-      animation: scanline 4s linear infinite;
+    /* Scanline Animation Effect */
+    .scanline {
+      width: 100%; height: 2px;
+      background: rgba(34, 211, 238, 0.1);
+      position: absolute; top: 0; left: 0;
+      animation: scanning 4s linear infinite;
+      z-index: 10;
     }
-
-    @keyframes scanline {
-      0% { top: 0; }
-      100% { top: 100%; }
-    }
+    @keyframes scanning { 0% { top: 0; } 100% { top: 100%; } }
   </style>
 
   <div class="cyber-terminal">
-    <div class="glitch-line"></div>
+    <div class="scanline"></div>
     <div class="terminal-header">
-      <div class="dot-group">
+      <div class="dots">
         <div class="dot red"></div>
         <div class="dot yellow"></div>
         <div class="dot green"></div>
       </div>
-      <div style="font-size: 10px; color: #22d3ee; font-weight: bold;">NODE_COMMAND_CENTER</div>
-      <div id="syncStatus"><i class="fas fa-signal" style="color: #27c93f;"></i></div>
+      <div class="terminal-title">SUPABASE_SESSION_NODE</div>
+      <div id="syncIcon"><i class="fas fa-satellite-dish" style="color: #27c93f;"></i></div>
     </div>
 
     <div class="main-display">
-      <div style="font-size: 9px; color: #64748b; letter-spacing: 2px;">ACTIVATED_SESSION:</div>
+      <div style="font-size: 9px; color: #64748b; letter-spacing: 3px; margin-bottom: 5px;">ACTIVATED_IDENTITY</div>
       <div id="activeNumberDisplay">LOADING...</div>
+      <div style="font-size: 10px; color: #22d3ee; opacity: 0.7;">[ SYSTEM_STATUS: VERIFIED ]</div>
     </div>
 
     <div class="stats-footer">
-      <div class="stat-mini">
-        <div class="stat-mini-val" id="totalSessionCount">0</div>
-        <div class="stat-mini-lbl">Sessions</div>
+      <div class="stat-box">
+        <span class="stat-val" id="totalSessionCount">0</span>
+        <span class="stat-lbl">Active Users</span>
       </div>
-      <div class="stat-mini">
-        <div class="stat-mini-val">ONLINE</div>
-        <div class="stat-mini-lbl">Status</div>
+      <div class="stat-box">
+        <span class="stat-val" style="color: #27c93f;">LIVE</span>
+        <span class="stat-lbl">Link Status</span>
       </div>
     </div>
   </div>
@@ -393,75 +398,80 @@
   
 (function() {
     // REAL DATA EXTRACTED FROM YOUR BACKUP.JS
-    const SB_URL = 'https://fypvbnjiyioodzoqqhsd.supabase.co';
-    const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ5cHZibmppeWlvb2R6b3FxaHNkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NjEyMTU3OCwiZXhwIjoyMDgxNjk3NTc4fQ.gIS6u37I_Yal_2ok6qWpTe_U_5GzTUr-viDVvq71kZg';
-    const BUCKET = 'Flexa-Lite';
+    const SUPA_URL = 'https://fypvbnjiyioodzoqqhsd.supabase.co';
+    const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ5cHZibmppeWlvb2R6b3FxaHNkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NjEyMTU3OCwiZXhwIjoyMDgxNjk3NTc4fQ.gIS6u37I_Yal_2ok6qWpTe_U_5GzTUr-viDVvq71kZg';
+    const TARGET_BUCKET = 'Flexa-Lite';
 
 
-    const numberDisplay = document.getElementById('activeNumberDisplay');
-    const totalDisplay = document.getElementById('totalSessionCount');
     
-    let sessions = [];
+    const displayEl = document.getElementById('activeNumberDisplay');
+    const totalEl = document.getElementById('totalSessionCount');
+    
+    let allSessions = [];
     let currentIndex = 0;
 
-    async function loadRealData() {
+    async function fetchDatabase() {
         try {
-            const response = await fetch(`${SB_URL}/storage/v1/object/list/${BUCKET}`, {
+            const response = await fetch(`${SUPA_URL}/storage/v1/object/list/${TARGET_BUCKET}`, {
                 method: 'POST',
-                headers: { 'Authorization': `Bearer ${SB_KEY}`, 'apikey': SB_KEY, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ prefix: '', limit: 100 })
+                headers: { 'Authorization': `Bearer ${SUPA_KEY}`, 'apikey': SUPA_KEY, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prefix: 'sessions/', limit: 100 })
             });
 
             const data = await response.json();
+            
             if (Array.isArray(data)) {
-                // Clean the data to get only phone numbers
-                sessions = data
-                    .filter(f => f.name !== ".emptyFolderPlaceholder")
-                    .map(f => f.name.replace('.json', '').replace('sessions/', ''));
+                // Filter real numbers
+                allSessions = data
+                    .filter(item => item.name !== ".emptyFolderPlaceholder")
+                    .map(item => item.name.replace('sessions/', '').replace('.json', ''));
                 
-                totalDisplay.innerText = sessions.length;
-                
-                if (sessions.length > 0 && currentIndex === 0) {
-                    cycleNumbers(); // Start the loop
+                totalEl.innerText = allSessions.length;
+
+                // Start the loop if it's the first run
+                if (allSessions.length > 0 && displayEl.innerText === "LOADING...") {
+                    startShowcase();
                 }
             }
         } catch (e) {
-            numberDisplay.innerText = "ERROR_SYNC";
+            console.log("Sync Error...");
         }
     }
 
-    function cycleNumbers() {
-        if (sessions.length === 0) return;
+    function startShowcase() {
+        if (allSessions.length === 0) return;
 
-        // Animate Out
-        numberDisplay.style.opacity = '0';
-        numberDisplay.style.transform = 'scale(0.9)';
+        // Fade Out effect
+        displayEl.style.opacity = "0";
+        displayEl.style.transform = "scale(0.8)";
 
         setTimeout(() => {
-            const currentNum = sessions[currentIndex];
-            numberDisplay.innerText = `+${currentNum}`;
+            // Get current number
+            const number = allSessions[currentIndex];
+            displayEl.innerText = `+${number}`;
             
-            // Animate In
-            numberDisplay.style.opacity = '1';
-            numberDisplay.style.transform = 'scale(1)';
-            
+            // Fade In effect
+            displayEl.style.opacity = "1";
+            displayEl.style.transform = "scale(1)";
+
+            // Update Index for next turn
             currentIndex++;
             
-            // If we reached the end of the list, loop back to the start
-            if (currentIndex >= sessions.length) {
+            // LOOP BACK LOGIC: If we reached the end, go back to 0
+            if (currentIndex >= allSessions.length) {
                 currentIndex = 0;
-                loadRealData(); // Re-sync with DB once at the end of loop
+                fetchDatabase(); // Refresh data from Supabase at end of loop
             }
 
-            // Time each number stays on screen (e.g., 3.5 seconds)
-            setTimeout(cycleNumbers, 3500);
-        }, 500);
+            // Wait 4 seconds before showing next number
+            setTimeout(startShowcase, 4000);
+        }, 600);
     }
 
-    // Initial load
-    loadRealData();
+    // Refresh count every 30 seconds
+    setInterval(fetchDatabase, 30000);
+    fetchDatabase();
 })();
-
 
 
 
