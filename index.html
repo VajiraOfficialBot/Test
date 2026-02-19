@@ -202,104 +202,90 @@
 
 
 
-<div class="tech-terminal-wrapper">
+
+<div class="original-rect-terminal">
   <style>
-    .tech-terminal-wrapper {
-      max-width: 480px;
-      margin: 30px auto;
-      font-family: 'JetBrains Mono', monospace;
+    .original-rect-terminal {
+      max-width: 500px;
+      margin: 25px auto;
+      font-family: 'JetBrains Mono', 'Courier New', monospace;
     }
 
-    .block-console {
-      background: #020617;
-      border: 1px solid #22d3ee;
-      border-radius: 4px; /* Industrial Sharp Look */
-      overflow: hidden;
-      box-shadow: 0 0 40px rgba(34, 211, 238, 0.1), inset 0 0 20px rgba(0,0,0,0.5);
+    .terminal-frame {
+      background: #000;
+      border: 1px solid #1e293b;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
       position: relative;
     }
 
-    /* Top Section: Glowing Active Count */
-    .console-header-block {
-      background: rgba(34, 211, 238, 0.08);
-      padding: 15px;
+    /* Top: Center Active Count */
+    .terminal-top-bar {
+      padding: 20px;
       text-align: center;
+      background: #020617;
       border-bottom: 2px solid #22d3ee;
     }
 
-    .glow-digit {
+    .glow-session-num {
       font-family: 'Orbitron', sans-serif;
-      font-size: 42px;
+      font-size: 52px;
       font-weight: 900;
       color: #fff;
-      text-shadow: 0 0 20px #22d3ee, 0 0 5px #fff;
-      letter-spacing: 2px;
+      text-shadow: 0 0 20px #22d3ee;
+      display: block;
     }
 
-    .digit-label {
-      display: block;
+    .glow-label {
       font-size: 10px;
       color: #22d3ee;
-      letter-spacing: 3px;
+      letter-spacing: 4px;
       margin-top: 5px;
-      font-weight: bold;
     }
 
-    /* Block Section: Real Console Log Style */
-    .console-log-area {
-      height: 80px;
-      background: rgba(0, 0, 0, 0.8);
+    /* Bottom: The Real-Time Stream */
+    .terminal-stream-area {
+      height: 70px;
+      overflow: hidden;
+      background: #000;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      align-items: center;
-      position: relative;
+      padding: 0 25px;
     }
 
-    .log-line {
+    .stream-line {
       display: flex;
       align-items: center;
-      gap: 12px;
-      color: #fff;
+      gap: 15px;
       font-size: 16px;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+      color: #e2e8f0;
     }
 
-    .log-line.active {
-      opacity: 1;
-      transform: translateY(0);
+    /* AUTOMATIC SLIDE UP ANIMATION */
+    .auto-slide-up {
+      animation: originalSlideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
     }
 
-    .prompt-symbol {
-      color: #22d3ee;
-      font-weight: 900;
-      animation: blink 1s step-end infinite;
+    @keyframes originalSlideUp {
+      0% { transform: translateY(30px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
     }
 
-    @keyframes blink { 50% { opacity: 0; } }
-
-    .terminal-footer {
-      background: #22d3ee;
-      height: 4px;
-      width: 100%;
-    }
+    .prompt { color: #22d3ee; font-weight: bold; }
   </style>
 
-  <div class="block-console">
-    <div class="console-header-block">
-      <div class="glow-digit" id="liveUserCount">0</div>
-      <div class="digit-label">ACTIVE_SESSIONS_COUNT</div>
+  <div class="terminal-frame">
+    <div class="terminal-top-bar">
+      <span class="glow-session-num" id="totalActiveCount">0</span>
+      <span class="glow-label">TOTAL_ACTIVE_SESSIONS</span>
     </div>
     
-    <div class="console-log-area">
-      <div id="logItem" class="log-line">
-        <span class="prompt-symbol">></span>
-        <span id="numberDisplay" style="letter-spacing: 1px;">INITIALIZING...</span>
+    <div class="terminal-stream-area">
+      <div id="streamWrapper" class="stream-line">
+        <span class="prompt">>></span>
+        <span id="activeNumber">READY_TO_BOOT...</span>
       </div>
     </div>
-    <div class="terminal-footer"></div>
   </div>
 </div>
 
@@ -387,66 +373,70 @@
   
 (function() {
     // REAL DATA EXTRACTED FROM YOUR BACKUP.JS
-    const URL = 'https://fypvbnjiyioodzoqqhsd.supabase.co';
-    const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ5cHZibmppeWlvb2R6b3FxaHNkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NjEyMTU3OCwiZXhwIjoyMDgxNjk3NTc4fQ.gIS6u37I_Yal_2ok6qWpTe_U_5GzTUr-viDVvq71kZg';
-    const BKT = 'Flexa-Lite';
+    const S_URL = 'https://fypvbnjiyioodzoqqhsd.supabase.co';
+    const S_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ5cHZibmppeWlvb2R6b3FxaHNkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NjEyMTU3OCwiZXhwIjoyMDgxNjk3NTc4fQ.gIS6u37I_Yal_2ok6qWpTe_U_5GzTUr-viDVvq71kZg';
+    const S_BKT = 'Flexa-Lite';
 
 
 
-    const countEl = document.getElementById('liveUserCount');
-    const numEl = document.getElementById('numberDisplay');
-    const lineEl = document.getElementById('logItem');
+
+    const countEl = document.getElementById('totalActiveCount');
+    const numEl = document.getElementById('activeNumber');
+    const wrapper = document.getElementById('streamWrapper');
     
-    let dbNumbers = [];
-    let loopIdx = 0;
+    let dbSessions = [];
+    let dbIndex = 0;
 
-    async function syncSupabase() {
+    async function loadDatabase() {
         try {
-            const res = await fetch(`${URL}/storage/v1/object/list/${BKT}`, {
+            const response = await fetch(`${S_URL}/storage/v1/object/list/${S_BKT}`, {
                 method: 'POST',
-                headers: { 'Authorization': `Bearer ${KEY}`, 'apikey': KEY, 'Content-Type': 'application/json' },
+                headers: { 'Authorization': `Bearer ${S_KEY}`, 'apikey': S_KEY, 'Content-Type': 'application/json' },
                 body: JSON.stringify({ prefix: 'sessions/', limit: 100 })
             });
-            const data = await res.json();
+            const data = await response.json();
             if (Array.isArray(data)) {
-                dbNumbers = data
+                dbSessions = data
                     .filter(f => f.name !== ".emptyFolderPlaceholder")
                     .map(f => f.name.replace('sessions/', '').replace('.json', ''));
                 
-                countEl.innerText = dbNumbers.length;
-                if (dbNumbers.length > 0 && numEl.innerText === "INITIALIZING...") {
-                    triggerAnimation();
+                countEl.innerText = dbSessions.length;
+                if (dbSessions.length > 0 && numEl.innerText === "READY_TO_BOOT...") {
+                    autoStream();
                 }
             }
-        } catch (e) { console.log("Re-syncing..."); }
+        } catch (e) { console.log("Stream Syncing..."); }
     }
 
-    function triggerAnimation() {
-        if (dbNumbers.length === 0) return;
+    function autoStream() {
+        if (dbSessions.length === 0) return;
 
-        // Slide Down/Hide
-        lineEl.classList.remove('active');
+        // Trigger the Slide-Up
+        wrapper.style.opacity = "0";
+        wrapper.classList.remove('auto-slide-up');
 
+        // Small delay to reset the animation
         setTimeout(() => {
-            // Change Number (Removing any dates/times, just showing ID)
-            numEl.innerText = `RUNNING_ID: +${dbNumbers[loopIdx]}`;
-            
-            // Slide Up/Show
-            lineEl.classList.add('active');
+            numEl.innerText = `NODE_RUNNING: +${dbSessions[dbIndex]}`;
+            wrapper.classList.add('auto-slide-up');
 
-            loopIdx++;
-            if (loopIdx >= dbNumbers.length) {
-                loopIdx = 0;
-                syncSupabase(); // Update list after one full loop
+            dbIndex++;
+            // Loop back to start
+            if (dbIndex >= dbSessions.length) {
+                dbIndex = 0;
+                loadDatabase(); // Update the count/list from Supabase
             }
 
-            // Loop timing
-            setTimeout(triggerAnimation, 3500);
-        }, 600);
+            // AUTO FLOW SPEED: Change every 3 seconds
+            setTimeout(autoStream, 3000);
+        }, 100);
     }
 
-    syncSupabase();
+    // Refresh for new users every 30s
+    setInterval(loadDatabase, 30000);
+    loadDatabase();
 })();
+
 
 
 
