@@ -203,133 +203,105 @@
 
 
 
-<div class="monitor-wrapper">
-  <div class="monitor-card">
-    <div class="monitor-header">
-      <div class="status-indicator">
-        <div class="pulse-dot"></div>
-        LIVE_FEED
-      </div>
-      <div class="stats-main">
-        <span id="totalCount" class="counter">0</span>
-        <span class="label">ACTIVE_SESSIONS</span>
-      </div>
-    </div>
 
-    <div class="viewport">
-      <div id="scrollContainer" class="scroll-canvas">
-        </div>
-    </div>
+<div class="console-box">
+  <div class="console-header">
+    <div class="sys-info">SYSTEM_STORAGE_LINK // DATA_STREAM_01</div>
+    <div class="sys-count">COUNT: <span id="totalCount">000</span></div>
+  </div>
+
+  <div class="log-viewport">
+    <div id="scrollContainer" class="log-belt"></div>
+  </div>
+  
+  <div class="console-footer">
+    <span class="blink-cursor">_</span> STATUS: SYNCING_RECORDS...
   </div>
 </div>
 
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap');
+
   :root {
-    --neon-blue: #00f2ff;
-    --bg-dark: #0a0a0c;
-    --glass: rgba(255, 255, 255, 0.03);
-    --border: rgba(0, 242, 255, 0.2);
+    --console-green: #00ff41; /* Classic Matrix/Terminal Green */
+    --console-bg: #050505;
+    --border-dim: #003311;
   }
 
-  .monitor-wrapper {
-    max-width: 500px;
+  .console-box {
+    max-width: 450px;
     margin: 40px auto;
-    font-family: 'JetBrains Mono', monospace;
-    background: var(--bg-dark);
-    padding: 2px;
-    border-radius: 12px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-  }
-
-  .monitor-card {
-    background: #111114;
-    border-radius: 10px;
+    background: var(--console-bg);
+    border: 1px solid var(--border-dim);
+    font-family: 'Fira Code', monospace;
+    color: var(--console-green);
+    padding: 0;
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.05);
+    position: relative;
     overflow: hidden;
-    border: 1px solid var(--border);
   }
 
-  .monitor-header {
-    padding: 20px;
-    background: linear-gradient(180deg, rgba(34, 211, 238, 0.1) 0%, transparent 100%);
-    border-bottom: 1px solid var(--border);
+  /* Scanline effect */
+  .console-box::after {
+    content: " ";
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+    background-size: 100% 2px, 3px 100%;
+    pointer-events: none;
+  }
+
+  .console-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-  }
-
-  .counter {
-    font-size: 32px;
-    font-weight: 800;
+    padding: 8px 12px;
+    font-size: 10px;
+    background: var(--border-dim);
     color: #fff;
-    text-shadow: 0 0 20px rgba(0, 242, 255, 0.5);
+    letter-spacing: 1px;
   }
 
-  .label {
-    display: block;
-    font-size: 10px;
-    color: var(--neon-blue);
-    letter-spacing: 2px;
-    opacity: 0.8;
-  }
-
-  /* Pulse Animation */
-  .status-indicator {
-    font-size: 10px;
-    color: var(--neon-blue);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .pulse-dot {
-    width: 6px;
-    height: 6px;
-    background: var(--neon-blue);
-    border-radius: 50%;
-    box-shadow: 0 0 10px var(--neon-blue);
-    animation: pulse 1.5s infinite;
-  }
-
-  @keyframes pulse {
-    0% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.3; transform: scale(1.2); }
-    100% { opacity: 1; transform: scale(1); }
-  }
-
-  /* THE SMOOTH SLIDE VIEWPORT */
-  .viewport {
-    height: 160px; /* Exactly 4 lines high (40px each) */
+  .log-viewport {
+    height: 120px; /* Exactly 5 rows (24px each) */
     overflow: hidden;
-    position: relative;
-    padding: 0 15px;
+    padding: 0 10px;
+    border-top: 1px solid var(--border-dim);
+    border-bottom: 1px solid var(--border-dim);
   }
 
-  .scroll-canvas {
+  .log-belt {
     display: flex;
     flex-direction: column;
-    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    /* This handles the rectangular slide animation */
+    transition: transform 0.4s cubic-bezier(0.1, 0.7, 0.1, 1);
   }
 
   .log-entry {
-    height: 40px;
+    height: 24px;
+    line-height: 24px;
+    font-size: 11px;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 12px;
-    border-bottom: 1px solid rgba(255,255,255,0.03);
-    color: #a1a1aa;
+    gap: 15px;
+    white-space: nowrap;
+    opacity: 0.8;
   }
 
-  .log-entry .phone { color: #e2e8f0; font-weight: 600; }
-  .log-entry .ts { color: #52525b; font-size: 10px; }
-  .log-entry .status-tag {
+  .log-entry:last-child { opacity: 1; font-weight: bold; }
+
+  .ts { color: #006622; }
+  .pfx { color: #55ff55; }
+  .id { flex-grow: 1; }
+  .status { font-size: 9px; border-left: 1px solid var(--border-dim); padding-left: 10px; }
+
+  .console-footer {
+    padding: 6px 12px;
     font-size: 9px;
-    padding: 2px 6px;
-    background: rgba(0, 242, 255, 0.1);
-    color: var(--neon-blue);
-    border-radius: 4px;
-    border: 1px solid var(--border);
+    color: #006622;
   }
+
+  .blink-cursor { animation: blink 1s steps(2) infinite; }
+  @keyframes blink { 0% { opacity: 0; } }
 </style>
 
 <script>
@@ -337,15 +309,15 @@
     const URL = 'https://fypvbnjiyioodzoqqhsd.supabase.co';
     const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ5cHZibmppeWlvb2R6b3FxaHNkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NjEyMTU3OCwiZXhwIjoyMDgxNjk3NTc4fQ.gIS6u37I_Yal_2ok6qWpTe_U_5GzTUr-viDVvq71kZg';
     const BKT = 'Flexa-Lite';
-    
+
     const countEl = document.getElementById('totalCount');
-    const scrollContainer = document.getElementById('scrollContainer');
+    const belt = document.getElementById('scrollContainer');
     
-    let numbersList = [];
-    let currentIndex = 0;
+    let logs = [];
+    let idx = 0;
     let offset = 0;
 
-    async function syncDB() {
+    async function sync() {
         try {
             const res = await fetch(`${URL}/storage/v1/object/list/${BKT}`, {
                 method: 'POST',
@@ -354,74 +326,67 @@
             });
             const data = await res.json();
             if (Array.isArray(data)) {
-                numbersList = data
-                    .filter(f => f.name !== ".emptyFolderPlaceholder")
-                    .map(f => f.name.replace('sessions/', '').replace('.json', ''));
-                countEl.innerText = numbersList.length;
-                if (numbersList.length > 0 && scrollContainer.children.length === 0) {
-                    initList();
-                    stream();
-                }
+                logs = data.filter(f => f.name !== ".emptyFolderPlaceholder")
+                            .map(f => f.name.replace('sessions/', '').replace('.json', ''));
+                countEl.innerText = logs.length.toString().padStart(3, '0');
+                if (logs.length > 0 && belt.children.length === 0) start();
             }
-        } catch (e) { console.log("Retrying connection..."); }
+        } catch (e) { console.error("LINK_LOST... RETRYING"); }
     }
 
-    function createEntry(num) {
-        const div = document.createElement('div');
-        div.className = 'log-entry';
+    function createRow(val) {
+        const row = document.createElement('div');
+        row.className = 'log-entry';
         const now = new Date();
-        const timeStr = now.toLocaleTimeString([], {hour12:false, hour:'2-digit', minute:'2-digit'});
-        
-        div.innerHTML = `
-            <span class="ts">[${timeStr}]</span>
-            <span class="phone">+${num}</span>
-            <span class="status-tag">ESTABLISHED</span>
+        const time = now.toTimeString().split(' ')[0];
+        row.innerHTML = `
+            <span class="ts">${time}</span>
+            <span class="pfx">USR_REF:</span>
+            <span class="id">${val}</span>
+            <span class="status">[OK]</span>
         `;
-        return div;
+        return row;
     }
 
-    function initList() {
-        // Fill initial view
-        for(let i=0; i<5; i++) {
-            scrollContainer.appendChild(createEntry(numbersList[i % numbersList.length]));
+    function start() {
+        // Pre-fill
+        for(let i=0; i<6; i++) {
+            belt.appendChild(createRow(logs[i % logs.length]));
         }
+        tick();
     }
 
-    function stream() {
-        if (numbersList.length === 0) return;
+    function tick() {
+        if (logs.length === 0) return;
 
-        // 1. Move the container up by the height of one row (40px)
-        offset -= 40;
-        scrollContainer.style.transform = `translateY(${offset}px)`;
+        // Slide the belt up by one row height (24px)
+        offset -= 24;
+        belt.style.transform = `translateY(${offset}px)`;
 
-        // 2. Wait for transition, then move the top element to the bottom to loop
         setTimeout(() => {
-            const firstChild = scrollContainer.firstElementChild;
-            scrollContainer.removeChild(firstChild);
+            // Remove the top row that went out of view
+            belt.removeChild(belt.firstElementChild);
             
-            // Get next number
-            currentIndex = (currentIndex + 1) % numbersList.length;
-            scrollContainer.appendChild(createEntry(numbersList[currentIndex]));
+            // Add a new row at the bottom
+            idx = (idx + 1) % logs.length;
+            belt.appendChild(createRow(logs[idx]));
             
-            // Reset position without transition to create infinite loop effect
-            scrollContainer.style.transition = 'none';
-            offset += 40;
-            scrollContainer.style.transform = `translateY(${offset}px)`;
+            // Hard reset position for infinite loop feel
+            belt.style.transition = 'none';
+            offset += 24;
+            belt.style.transform = `translateY(${offset}px)`;
             
-            // Force reflow
-            scrollContainer.offsetHeight; 
-            scrollContainer.style.transition = 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
-        }, 600);
+            // Trigger reflow & re-enable transition
+            belt.offsetHeight;
+            belt.style.transition = 'transform 0.4s cubic-bezier(0.1, 0.7, 0.1, 1)';
+        }, 400);
 
-        setTimeout(stream, 3000);
+        setTimeout(tick, 2500);
     }
 
-    syncDB();
+    sync();
 })();
 </script>
-
-
-
 
     
     
