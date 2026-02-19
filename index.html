@@ -39,114 +39,104 @@
 
 
 
-        /* --- COMMANDS SECTION STYLES --- */
-        .commands-section {
-            width: 100%;
-            max-width: 1000px;
-            margin: 60px auto;
-            padding: 0 20px;
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .section-title i {
-            font-size: 40px;
-            color: #25D366; /* WhatsApp Green */
-            margin-bottom: 10px;
-            filter: drop-shadow(0 0 10px rgba(37, 211, 102, 0.4));
-        }
-
-        .section-title h2 {
-            font-size: 24px;
-            letter-spacing: 4px;
-            color: white;
-        }
-
-        .section-title p {
-            font-size: 10px;
-            color: var(--text-dim);
-            letter-spacing: 2px;
-        }
-
-        .command-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-        }
-
-        .cmd-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 25px;
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .cmd-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--accent);
-            box-shadow: 0 10px 30px rgba(34, 211, 238, 0.1);
-        }
-
-        .cmd-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .cmd-header i {
-            font-size: 20px;
-            color: var(--accent);
-        }
-
-        .cmd-header h3 {
-            font-size: 14px;
-            letter-spacing: 2px;
-            font-weight: 800;
-        }
-
-        .cmd-list {
-            list-style: none;
-        }
-
-        .cmd-list li {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px border var(--border);
-            font-size: 13px;
-        }
-
-        .cmd-list li:last-child { border-bottom: none; }
-
-        .cmd-list code {
-            font-family: 'JetBrains Mono', monospace;
-            color: var(--accent);
-            background: rgba(34, 211, 238, 0.1);
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-weight: 600;
-        }
-
-        .cmd-list span {
-            color: var(--text-dim);
-            font-size: 11px;
-        }
-
-        /* Card-specific glows */
-        .admin:hover { border-color: #ef4444; box-shadow: 0 0 20px rgba(239, 68, 68, 0.2); }
-        .admin i { color: #ef4444; }
-        .tools:hover { border-color: #f59e0b; box-shadow: 0 0 20px rgba(245, 158, 11, 0.2); }
-        .tools i { color: #f59e0b; }
+        
 
 
+/* --- COMMAND NAVIGATION BUTTONS --- */
+.command-nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin: 30px auto;
+    max-width: 1000px;
+    padding: 0 20px;
+}
+
+.nav-btn {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    padding: 8px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    transition: 0.3s;
+    text-transform: uppercase;
+}
+
+.nav-btn:hover, .nav-btn.active {
+    background: var(--accent);
+    color: #020617;
+    border-color: var(--accent);
+    box-shadow: 0 0 15px var(--primary-glow);
+}
+
+/* --- MODULE DISPLAY LOGIC --- */
+.cmd-module {
+    display: none;
+    width: 90%;
+    max-width: 500px;
+    margin: 0 auto 40px;
+    animation: moduleAppear 0.4s ease-out forwards;
+}
+
+.cmd-module.active { display: block; }
+
+@keyframes moduleAppear {
+    from { opacity: 0; transform: translateY(20px); filter: blur(10px); }
+    to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+.cmd-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 25px;
+    backdrop-filter: blur(10px);
+}
+
+.cmd-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 15px;
+}
+
+.cmd-header i { font-size: 20px; color: var(--accent); }
+.cmd-header h3 { font-size: 14px; letter-spacing: 2px; color: #fff; }
+
+.cmd-list { list-style: none; }
+.cmd-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.cmd-list code {
+    font-family: 'JetBrains Mono';
+    color: var(--accent);
+    background: rgba(34, 211, 238, 0.1);
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+}
+
+.cmd-list span { color: var(--text-dim); font-size: 10px; }
+
+/* Category Specific Colors */
+.dl-mod i { color: #3b82f6; }
+.movie-mod i { color: #e11d48; }
+.ai-mod i { color: #a855f7; }
+.logo-mod i { color: #2ed573; }
+.scroll-list { max-height: 350px; overflow-y: auto; padding-right: 10px; }
+.scroll-list::-webkit-scrollbar { width: 4px; }
+.scroll-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
 
 
 
@@ -598,97 +588,98 @@
 
 
 
-<section class="commands-section">
-    <div class="section-title">
-        <i class="fab fa-whatsapp"></i>
-        <h2>SYSTEM PROTOCOLS</h2>
-        <p>TOTAL COMMANDS DETECTED: 114</p>
-    </div>
+<div class="command-nav">
+    <button class="nav-btn active" onclick="showModule('main-m')">Main</button>
+    <button class="nav-btn" onclick="showModule('dl-m')">Downloads</button>
+    <button class="nav-btn" onclick="showModule('ai-m')">AI</button>
+    <button class="nav-btn" onclick="showModule('movie-m')">Movies</button>
+    <button class="nav-btn" onclick="showModule('logo-m')">Logos</button>
+    <button class="nav-btn" onclick="showModule('group-m')">Group</button>
+    <button class="nav-btn" onclick="showModule('sys-m')">System</button>
+</div>
 
-    <div class="command-grid">
-        <div class="cmd-card download-card">
-            <div class="cmd-header"><i class="fas fa-cloud-download-alt"></i><h3>DOWNLOAD</h3></div>
+<div id="main-m" class="cmd-module active">
+    <div class="cmd-card">
+        <div class="cmd-header"><i class="fas fa-bolt"></i><h3>MAIN CMD</h3></div>
+        <ul class="cmd-list">
+            <li><code>.alive</code> <span>Check Status</span></li>
+            <li><code>.ping</code> <span>Bot Speed</span></li>
+            <li><code>.system</code> <span>System Info</span></li>
+            <li><code>.jid</code> <span>Get Chat JID</span></li>
+        </ul>
+    </div>
+</div>
+
+<div id="dl-m" class="cmd-module dl-mod">
+    <div class="cmd-card">
+        <div class="cmd-header"><i class="fas fa-cloud-download-alt"></i><h3>DOWNLOAD CMD</h3></div>
+        <div class="scroll-list">
             <ul class="cmd-list">
                 <li><code>.song</code> <span>MP3 Audio</span></li>
                 <li><code>.video</code> <span>MP4 Video</span></li>
-                <li><code>.tiktok</code> <span>No Watermark</span></li>
+                <li><code>.tiktok</code> <span>TikTok DL</span></li>
                 <li><code>.fb</code> <span>Facebook DL</span></li>
                 <li><code>.apk</code> <span>App Installer</span></li>
-                <li><code>.twitter</code> <span>X/Twitter</span></li>
-                <li><code>.img</code> <span>Image DL</span></li>
-                <li><code>.mediafire</code> <span>File Link</span></li>
-                <li><code>.pinterest</code> <span>Pin DL</span></li>
-                <li><code>.alldl</code> <span>Universal</span></li>
+                <li><code>.xnxx</code> <span>18+ Video</span></li>
+                <li><code>.mediafire</code> <span>Link DL</span></li>
+                <li><code>.alldl</code> <span>Universal DL</span></li>
             </ul>
-        </div>
-
-        <div class="cmd-card ai-card">
-            <div class="cmd-header"><i class="fas fa-brain"></i><h3>AI CORE</h3></div>
-            <ul class="cmd-list">
-                <li><code>.chatgpt</code> <span>GPT-4 Turbo</span></li>
-                <li><code>.liama</code> <span>Meta LLaMA</span></li>
-                <li><code>.metaai</code> <span>Assistant</span></li>
-                <li><code>.voicegpt</code> <span>Voice AI</span></li>
-                <li><code>.openai</code> <span>Direct API</span></li>
-                <li><code>.mistral</code> <span>Mistral 7B</span></li>
-                <li><code>.deepimg</code> <span>DALL-E 3</span></li>
-            </ul>
-        </div>
-
-        <div class="cmd-card movie-card">
-            <div class="cmd-header"><i class="fas fa-film"></i><h3>CINEMA</h3></div>
-            <ul class="cmd-list">
-                <li><code>.subz</code> <span>Sinhala Sub</span></li>
-                <li><code>.moviepro</code> <span>Pro Search</span></li>
-                <li><code>.mp4moviez</code> <span>MP4 Hub</span></li>
-                <li><code>.sinhalasub</code> <span>Main Source</span></li>
-                <li><code>.pirate</code> <span>Torrents</span></li>
-            </ul>
-        </div>
-
-        <div class="cmd-card admin-card">
-            <div class="cmd-header"><i class="fas fa-user-crown"></i><h3>OWNER</h3></div>
-            <ul class="cmd-list">
-                <li><code>.setname</code> <span>Edit Identity</span></li>
-                <li><code>.flexa</code> <span>Owner Msg</span></li>
-                <li><code>.active</code> <span>Bot Status</span></li>
-                <li><code>.bank</code> <span>Payment Info</span></li>
-                <li><code>.vv</code> <span>View Once</span></li>
-            </ul>
-        </div>
-
-        <div class="cmd-card tools-card">
-            <div class="cmd-header"><i class="fas fa-cog"></i><h3>SETTINGS</h3></div>
-            <ul class="cmd-list">
-                <li><code>.mode</code> <span>Public/Private</span></li>
-                <li><code>.autoview</code> <span>Status View</span></li>
-                <li><code>.anticall</code> <span>Block Calls</span></li>
-                <li><code>.antibad</code> <span>Word Filter</span></li>
-                <li><code>.antidelete</code> <span>Anti-Revoke</span></li>
-                <li><code>.welcome</code> <span>Auto Greet</span></li>
-            </ul>
-        </div>
-
-        <div class="cmd-card logo-card" style="grid-column: span 1;">
-            <div class="cmd-header"><i class="fas fa-paint-brush"></i><h3>LOGO GEN</h3></div>
-            <div style="max-height: 300px; overflow-y: auto; padding-right: 5px;">
-                <ul class="cmd-list">
-                    <li><code>.neon</code> <span>Glow Style</span></li>
-                    <li><code>.glitch</code> <span>Error Style</span></li>
-                    <li><code>.graffiti</code> <span>Street Art</span></li>
-                    <li><code>.galaxy</code> <span>Space Style</span></li>
-                    <li><code>.luxury</code> <span>Gold Style</span></li>
-                    <li><code>.matrix</code> <span>Code Rain</span></li>
-                    <li><code>.frozen</code> <span>Ice Style</span></li>
-                    <li><code>.lava</code> <span>Fire Style</span></li>
-                    <li><code>.blackpink</code> <span>K-Pop Style</span></li>
-                    <li><code>.thunder</code> <span>Storm Style</span></li>
-                    <li><code>.watercolor</code> <span>Art Style</span></li>
-                </ul>
-            </div>
         </div>
     </div>
-</section>
+</div>
+
+<div id="ai-m" class="cmd-module ai-mod">
+    <div class="cmd-card">
+        <div class="cmd-header"><i class="fas fa-robot"></i><h3>AI CMD</h3></div>
+        <ul class="cmd-list">
+            <li><code>.chatgpt</code> <span>GPT-4 Chat</span></li>
+            <li><code>.metaai</code> <span>Meta Assistant</span></li>
+            <li><code>.deepimg</code> <span>AI Generator</span></li>
+            <li><code>.voicegpt</code> <span>Voice AI</span></li>
+        </ul>
+    </div>
+</div>
+
+<div id="logo-m" class="cmd-module logo-mod">
+    <div class="cmd-card">
+        <div class="cmd-header"><i class="fas fa-palette"></i><h3>LOGO MENU</h3></div>
+        <div class="scroll-list">
+            <ul class="cmd-list">
+                <li><code>.neon</code> <span>Glow Style</span></li>
+                <li><code>.glitch</code> <span>Error Style</span></li>
+                <li><code>.graffiti</code> <span>Street Art</span></li>
+                <li><code>.galaxy</code> <span>Space Style</span></li>
+                <li><code>.matrix</code> <span>Code Rain</span></li>
+                <li><code>.frozen</code> <span>Ice Style</span></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div id="group-m" class="cmd-module">
+    <div class="cmd-card">
+        <div class="cmd-header"><i class="fas fa-users"></i><h3>GROUP CMD</h3></div>
+        <ul class="cmd-list">
+            <li><code>.kick</code> <span>Remove Member</span></li>
+            <li><code>.promote</code> <span>Set Admin</span></li>
+            <li><code>.mute</code> <span>Mute Group</span></li>
+            <li><code>.hidetag</code> <span>Silent Tag</span></li>
+        </ul>
+    </div>
+</div>
+
+<div id="sys-m" class="cmd-module sys-mod">
+    <div class="cmd-card">
+        <div class="cmd-header"><i class="fas fa-cog"></i><h3>SETTING CMD</h3></div>
+        <ul class="cmd-list">
+            <li><code>.mode</code> <span>Public/Private</span></li>
+            <li><code>.anticall</code> <span>Block Calls</span></li>
+            <li><code>.antidelete</code> <span>Anti-Revoke</span></li>
+            <li><code>.alwaysonline</code> <span>Status Mode</span></li>
+        </ul>
+    </div>
+</div>
+
 
 
 
@@ -836,6 +827,21 @@
 })();
 
 
+
+
+
+function showModule(moduleId) {
+    // Hide all modules and deactivate buttons
+    document.querySelectorAll('.cmd-module').forEach(m => m.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    
+    // Show selected module and activate current button
+    document.getElementById(moduleId).classList.add('active');
+    event.currentTarget.classList.add('active');
+}
+
+
+        
 
         
     </script>
