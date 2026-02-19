@@ -6,8 +6,6 @@
     <title>Flexa Lite | Midnight</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=JetBrains+Mono&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=JetBrains+Mono:wght@300;500&display=swap" rel="stylesheet">
-
     
     <style>
         :root {
@@ -192,12 +190,6 @@
             letter-spacing: 4px;
         }
 
-
-
-
-        
-        
-
         @keyframes zoom { from { transform: scale(0.5); opacity: 0; } }
         .hidden { display: none; }
     </style>
@@ -223,16 +215,219 @@
   </div>
 
   <div class="terminal-rect">
-    <div class="terminal-overlay"></div>
     <div id="scrollContainer" class="log-belt">
       </div>
   </div>
   
   <div class="terminal-footer">
     <span class="line-path"></span>
-    <span class="status-msg">STRM_ACTIVE // ENCRYPTED_FEED</span>
+    <span class="status-msg">ENCRYPTED_FEED_ACTIVE</span>
   </div>
 </div>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=JetBrains+Mono:wght@300;500&display=swap');
+
+  :root {
+    --accent: #00e5ff;
+    --bg-surface: #0a0a0b;
+    --text-dim: #52525b;
+    --row-height: 32px;
+  }
+
+  .cmd-center {
+    max-width: 500px;
+    margin: 50px auto;
+    background: var(--bg-surface);
+    padding: 24px;
+    border: 1px solid #18181b;
+    border-radius: 2px;
+    font-family: 'Inter', sans-serif;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+  }
+
+  .stat-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .stat-glance {
+    display: inline-block;
+    position: relative;
+  }
+
+  .stat-label {
+    display: block;
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+  }
+
+  .stat-value {
+    margin: 0;
+    font-size: 56px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .active-pulse {
+    width: 40px;
+    height: 2px;
+    background: var(--accent);
+    margin: 10px auto 0;
+    box-shadow: 0 0 10px var(--accent);
+    animation: breath 2s ease-in-out infinite;
+  }
+
+  @keyframes breath {
+    0%, 100% { opacity: 0.3; width: 20px; }
+    50% { opacity: 1; width: 50px; }
+  }
+
+  .terminal-rect {
+    height: calc(var(--row-height) * 4);
+    overflow: hidden;
+    background: #0d0d0f;
+    border: 1px solid #1c1c21;
+    position: relative;
+  }
+
+  .log-belt {
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+  }
+
+  .log-entry {
+    height: var(--row-height);
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    border-bottom: 1px solid #16161a;
+    color: #a1a1aa;
+    white-space: nowrap;
+    background: linear-gradient(90deg, rgba(0, 229, 255, 0.03) 0%, rgba(0,0,0,0) 100%);
+  }
+
+  .log-entry .ts { color: var(--text-dim); margin-right: 15px; }
+  
+  /* Blur styling for the ID */
+  .id-container { color: #fff; flex-grow: 1; display: flex; align-items: center; }
+  .blur-text { 
+    filter: blur(4px); 
+    background: rgba(255,255,255,0.1); 
+    padding: 0 2px;
+    margin: 0 2px;
+    user-select: none;
+  }
+
+  .log-entry .mark { color: var(--accent); font-weight: bold; margin-right: 10px; }
+
+  .terminal-footer {
+    margin-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 8px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+  }
+
+  .line-path { height: 1px; flex-grow: 1; background: #1c1c21; margin-right: 15px; }
+</style>
+
+<script>
+(function() {
+    const URL = 'https://fypvbnjiyioodzoqqhsd.supabase.co';
+    const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ5cHZibmppeWlvb2R6b3FxaHNkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NjEyMTU3OCwiZXhwIjoyMDgxNjk3NTc4fQ.gIS6u37I_Yal_2ok6qWpTe_U_5GzTUr-viDVvq71kZg';
+    const BKT = 'Flexa-Lite';
+
+    const countEl = document.getElementById('totalCount');
+    const belt = document.getElementById('scrollContainer');
+    
+    let logs = [];
+    let idx = 0;
+    let offset = 0;
+    const ROW_H = 32;
+
+    async function fetchDB() {
+        try {
+            const res = await fetch(`${URL}/storage/v1/object/list/${BKT}`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${KEY}`, 'apikey': KEY, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prefix: 'sessions/', limit: 100 })
+            });
+            const data = await res.json();
+            if (Array.isArray(data)) {
+                logs = data.filter(f => f.name !== ".emptyFolderPlaceholder")
+                            .map(f => f.name.replace('sessions/', '').replace('.json', ''));
+                countEl.innerText = logs.length;
+                if (logs.length > 0 && belt.children.length === 0) start();
+            }
+        } catch (e) { console.log("RECONNECTING..."); }
+    }
+
+    function createRow(val) {
+        const row = document.createElement('div');
+        row.className = 'log-entry';
+        const time = new Date().toLocaleTimeString([], {hour12:false, hour:'2-digit', minute:'2-digit', second:'2-digit'});
+        
+        // Split ID to blur middle 4 characters
+        const str = String(val);
+        let idHtml = '';
+        if (str.length > 6) {
+          const part1 = str.substring(0, 3);
+          const middle = str.substring(3, 7);
+          const part2 = str.substring(7);
+          idHtml = `<span>${part1}</span><span class="blur-text">${middle}</span><span>${part2}</span>`;
+        } else {
+          idHtml = `<span>${str}</span>`;
+        }
+
+        row.innerHTML = `
+            <span class="mark">»</span>
+            <span class="ts">${time}</span>
+            <span class="id-container">ID: ${idHtml}</span>
+            <span style="color:#22c55e; font-size:9px; letter-spacing:1px">● ONLINE</span>
+        `;
+        return row;
+    }
+
+    function start() {
+        for(let i=0; i<6; i++) {
+            belt.appendChild(createRow(logs[i % logs.length]));
+        }
+        slide();
+    }
+
+    function slide() {
+        if (logs.length === 0) return;
+        offset -= ROW_H;
+        belt.style.transform = `translateY(${offset}px)`;
+        setTimeout(() => {
+            belt.removeChild(belt.firstElementChild);
+            idx = (idx + 1) % logs.length;
+            belt.appendChild(createRow(logs[idx]));
+            belt.style.transition = 'none';
+            offset += ROW_H;
+            belt.style.transform = `translateY(${offset}px)`;
+            belt.offsetHeight; 
+            belt.style.transition = 'transform 0.5s cubic-bezier(0.65, 0, 0.35, 1)';
+        }, 500);
+        setTimeout(slide, 2800);
+    }
+
+    fetchDB();
+    setInterval(fetchDB, 30000);
+})();
+</script>
+
+
 
 
 
@@ -273,51 +468,6 @@
             <span>BOT SETTINGS CONTROL</span>
         </a>
 
-
-
-
-
-<div class="glass-panel bot-info-panel">
-    <div class="section-header">
-        <i class="fas fa-robot"></i>
-        <span>COMMAND CENTER</span>
-    </div>
-    
-    <div class="command-list">
-        <div class="cmd-item">
-            <code class="cmd-trigger">.menu</code>
-            <span class="cmd-desc">Shows main bot functionality and categories.</span>
-        </div>
-        <div class="cmd-item">
-            <code class="cmd-trigger">.ping</code>
-            <span class="cmd-desc">Checks bot latency and active status.</span>
-        </div>
-        <div class="cmd-item">
-            <code class="cmd-trigger">.ai [query]</code>
-            <span class="cmd-desc">Sends a prompt directly to the DeepBlue AI.</span>
-        </div>
-        <div class="cmd-item">
-            <code class="cmd-trigger">.broadcast</code>
-            <span class="cmd-desc">Admin tool to send messages to all users.</span>
-        </div>
-    </div>
-    
-    <div class="bot-status-footer">
-        <span class="status-dot"></span>
-        <small>BOT VERSION 2.4.1 — ACTIVE</small>
-    </div>
-</div>
-
-
-
-
-
-
-
-
-
-
-        
         <div style="text-align:center; margin-top:15px; font-size:10px; color:var(--text-dim); letter-spacing:1px;">
             <i class="fas fa-shield-check" style="color:var(--accent)"></i> SYSTEM ENCRYPTED & SECURE
         </div>
@@ -359,101 +509,6 @@
 
 
 
-(function() {
-    const URL = 'https://fypvbnjiyioodzoqqhsd.supabase.co';
-    const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ5cHZibmppeWlvb2R6b3FxaHNkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NjEyMTU3OCwiZXhwIjoyMDgyMTk2MTcyfQ.gIS6u37I_Yal_2ok6qWpTe_U_5GzTUr-viDVvq71kZg';
-    const BKT = 'Flexa-Lite';
-
-    const countEl = document.getElementById('totalCount');
-    const belt = document.getElementById('scrollContainer');
-    
-    let logs = [];
-    let idx = 0;
-    let offset = 0;
-    const ROW_H = 26;
-
-    async function fetchDB() {
-        try {
-            const res = await fetch(`${URL}/storage/v1/object/list/${BKT}`, {
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${KEY}`, 'apikey': KEY, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ prefix: '', limit: 100 })
-            });
-            const data = await res.json();
-            
-            if (Array.isArray(data)) {
-                const rawLogs = data
-                    .filter(f => f.name !== ".emptyFolderPlaceholder" && !f.name.endsWith('/'))
-                    .map(f => f.name.replace('sessions/', '').replace('.json', ''));
-                
-                if (rawLogs.length > 0) {
-                    logs = rawLogs;
-                    countEl.innerText = logs.length;
-                    if (belt.children.length === 0) start();
-                }
-            }
-        } catch (e) { 
-            console.error("CONN_LOST: Retrying..."); 
-        }
-    }
-
-    function createRow(val) {
-        const row = document.createElement('div');
-        row.className = 'log-entry';
-        const time = new Date().toLocaleTimeString('en-GB', {hour12:false});
-        
-        const fullId = String(val);
-        let formattedId = '';
-        
-        if (fullId.length > 6) {
-            const head = fullId.slice(0, 3);
-            const middle = fullId.slice(3, 7);
-            const tail = fullId.slice(7);
-            formattedId = `${head}<span class="blur-box">${middle}</span>${tail}`;
-        } else {
-            formattedId = fullId;
-        }
-
-        row.innerHTML = `
-            <span class="mark">»</span>
-            <span class="ts">[${time}]</span>
-            <span class="id-container">node_auth//${formattedId}</span>
-            <span class="status-tag">ESTABLISHED</span>
-        `;
-        return row;
-    }
-
-    function start() {
-        for(let i=0; i<8; i++) {
-            belt.appendChild(createRow(logs[i % logs.length]));
-        }
-        slide();
-    }
-
-    function slide() {
-        if (logs.length === 0) return;
-        offset -= ROW_H;
-        belt.style.transform = `translateY(${offset}px)`;
-        
-        setTimeout(() => {
-            belt.removeChild(belt.firstElementChild);
-            idx = (idx + 1) % logs.length;
-            belt.appendChild(createRow(logs[idx]));
-            
-            belt.style.transition = 'none';
-            offset += ROW_H;
-            belt.style.transform = `translateY(${offset}px)`;
-            
-            belt.offsetHeight; 
-            belt.style.transition = 'transform 0.4s cubic-bezier(0.65, 0, 0.35, 1)';
-        }, 400);
-
-        setTimeout(slide, 2400);
-    }
-
-    fetchDB();
-    setInterval(fetchDB, 20000);
-})();
 
 
 
