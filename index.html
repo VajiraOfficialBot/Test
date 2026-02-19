@@ -190,6 +190,77 @@
             letter-spacing: 4px;
         }
 
+
+
+
+
+
+.bot-info-panel {
+    margin-top: 20px;
+    padding: 20px !important;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    font-weight: 800;
+    font-size: 14px;
+    color: var(--accent);
+    letter-spacing: 2px;
+}
+
+.command-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.cmd-item {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    border-radius: 10px;
+    border-left: 3px solid var(--accent);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.cmd-trigger {
+    color: #fff;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.cmd-desc {
+    color: var(--text-dim);
+    font-size: 11px;
+}
+
+.bot-status-footer {
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-dim);
+}
+
+.status-dot {
+    width: 6px;
+    height: 6px;
+    background: #10b981; /* Green active state */
+    border-radius: 50%;
+    box-shadow: 0 0 8px #10b981;
+}
+
+
+
+
+
+        
+
         @keyframes zoom { from { transform: scale(0.5); opacity: 0; } }
         .hidden { display: none; }
     </style>
@@ -468,6 +539,51 @@
             <span>BOT SETTINGS CONTROL</span>
         </a>
 
+
+
+
+
+<div class="glass-panel bot-info-panel">
+    <div class="section-header">
+        <i class="fas fa-robot"></i>
+        <span>COMMAND CENTER</span>
+    </div>
+    
+    <div class="command-list">
+        <div class="cmd-item">
+            <code class="cmd-trigger">.menu</code>
+            <span class="cmd-desc">Shows main bot functionality and categories.</span>
+        </div>
+        <div class="cmd-item">
+            <code class="cmd-trigger">.ping</code>
+            <span class="cmd-desc">Checks bot latency and active status.</span>
+        </div>
+        <div class="cmd-item">
+            <code class="cmd-trigger">.ai [query]</code>
+            <span class="cmd-desc">Sends a prompt directly to the DeepBlue AI.</span>
+        </div>
+        <div class="cmd-item">
+            <code class="cmd-trigger">.broadcast</code>
+            <span class="cmd-desc">Admin tool to send messages to all users.</span>
+        </div>
+    </div>
+    
+    <div class="bot-status-footer">
+        <span class="status-dot"></span>
+        <small>BOT VERSION 2.4.1 — ACTIVE</small>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+        
         <div style="text-align:center; margin-top:15px; font-size:10px; color:var(--text-dim); letter-spacing:1px;">
             <i class="fas fa-shield-check" style="color:var(--accent)"></i> SYSTEM ENCRYPTED & SECURE
         </div>
