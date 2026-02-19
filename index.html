@@ -203,93 +203,223 @@
 
 
 
-<div class="hack-terminal-container">
-  <style>
-    .hack-terminal-container {
-      max-width: 550px;
-      margin: 30px auto;
-      font-family: 'JetBrains Mono', 'Courier New', monospace;
-    }
-
-    .industrial-frame {
-      background: #000;
-      border: 1px solid #22d3ee;
-      border-top: 4px solid #22d3ee;
-      box-shadow: 0 0 30px rgba(34, 211, 238, 0.15);
-      position: relative;
-    }
-
-    /* TOP SECTION: GLOWING STATS */
-    .terminal-header {
-      padding: 15px;
-      text-align: center;
-      background: rgba(34, 211, 238, 0.05);
-      border-bottom: 1px solid rgba(34, 211, 238, 0.2);
-    }
-
-    .glow-num {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 40px;
-      color: #fff;
-      text-shadow: 0 0 15px #22d3ee;
-    }
-
-    .glow-lbl {
-      display: block;
-      font-size: 9px;
-      color: #22d3ee;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-    }
-
-    /* LOG SECTION: AUTO-SCROLLING BLOCK */
-    .log-window {
-      height: 120px; /* Space for 3-4 lines */
-      overflow: hidden;
-      padding: 10px 20px;
-      background: repeating-linear-gradient(0deg, #000 0px, #000 1px, transparent 1px, transparent 2px);
-      background-size: 100% 3px; /* Scanline effect */
-    }
-
-    #scrollContainer {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-    }
-
-    .log-entry {
-      font-size: 13px;
-      display: flex;
-      justify-content: space-between;
-      color: #94a3b8;
-      border-left: 2px solid #22d3ee;
-      padding-left: 10px;
-      animation: lineIn 0.5s ease forwards;
-    }
-
-    .log-entry .timestamp { color: #475569; margin-right: 10px; }
-    .log-entry .phone { color: #fff; font-weight: bold; }
-    .log-entry .status { color: #22d3ee; font-weight: 800; font-size: 10px; }
-
-    @keyframes lineIn {
-      from { opacity: 0; transform: translateX(-10px); }
-      to { opacity: 1; transform: translateX(0); }
-    }
-  </style>
-
-  <div class="industrial-frame">
-    <div class="terminal-header">
-      <span class="glow-num" id="totalCount">0</span>
-      <span class="glow-lbl">ACTIVE_DATABASE_SESSIONS</span>
+<div class="monitor-wrapper">
+  <div class="monitor-card">
+    <div class="monitor-header">
+      <div class="status-indicator">
+        <div class="pulse-dot"></div>
+        LIVE_FEED
+      </div>
+      <div class="stats-main">
+        <span id="totalCount" class="counter">0</span>
+        <span class="label">ACTIVE_SESSIONS</span>
+      </div>
     </div>
-    
-    <div class="log-window">
-      <div id="scrollContainer">
+
+    <div class="viewport">
+      <div id="scrollContainer" class="scroll-canvas">
         </div>
     </div>
   </div>
 </div>
+
+<style>
+  :root {
+    --neon-blue: #00f2ff;
+    --bg-dark: #0a0a0c;
+    --glass: rgba(255, 255, 255, 0.03);
+    --border: rgba(0, 242, 255, 0.2);
+  }
+
+  .monitor-wrapper {
+    max-width: 500px;
+    margin: 40px auto;
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--bg-dark);
+    padding: 2px;
+    border-radius: 12px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  }
+
+  .monitor-card {
+    background: #111114;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .monitor-header {
+    padding: 20px;
+    background: linear-gradient(180deg, rgba(34, 211, 238, 0.1) 0%, transparent 100%);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .counter {
+    font-size: 32px;
+    font-weight: 800;
+    color: #fff;
+    text-shadow: 0 0 20px rgba(0, 242, 255, 0.5);
+  }
+
+  .label {
+    display: block;
+    font-size: 10px;
+    color: var(--neon-blue);
+    letter-spacing: 2px;
+    opacity: 0.8;
+  }
+
+  /* Pulse Animation */
+  .status-indicator {
+    font-size: 10px;
+    color: var(--neon-blue);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .pulse-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--neon-blue);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--neon-blue);
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.3; transform: scale(1.2); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+
+  /* THE SMOOTH SLIDE VIEWPORT */
+  .viewport {
+    height: 160px; /* Exactly 4 lines high (40px each) */
+    overflow: hidden;
+    position: relative;
+    padding: 0 15px;
+  }
+
+  .scroll-canvas {
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .log-entry {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    color: #a1a1aa;
+  }
+
+  .log-entry .phone { color: #e2e8f0; font-weight: 600; }
+  .log-entry .ts { color: #52525b; font-size: 10px; }
+  .log-entry .status-tag {
+    font-size: 9px;
+    padding: 2px 6px;
+    background: rgba(0, 242, 255, 0.1);
+    color: var(--neon-blue);
+    border-radius: 4px;
+    border: 1px solid var(--border);
+  }
+</style>
+
+<script>
+(function() {
+    const URL = 'https://fypvbnjiyioodzoqqhsd.supabase.co';
+    const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ5cHZibmppeWlvb2R6b3FxaHNkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NjEyMTU3OCwiZXhwIjoyMDgxNjk3NTc4fQ.gIS6u37I_Yal_2ok6qWpTe_U_5GzTUr-viDVvq71kZg';
+    const BKT = 'Flexa-Lite';
+    
+    const countEl = document.getElementById('totalCount');
+    const scrollContainer = document.getElementById('scrollContainer');
+    
+    let numbersList = [];
+    let currentIndex = 0;
+    let offset = 0;
+
+    async function syncDB() {
+        try {
+            const res = await fetch(`${URL}/storage/v1/object/list/${BKT}`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${KEY}`, 'apikey': KEY, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prefix: 'sessions/', limit: 100 })
+            });
+            const data = await res.json();
+            if (Array.isArray(data)) {
+                numbersList = data
+                    .filter(f => f.name !== ".emptyFolderPlaceholder")
+                    .map(f => f.name.replace('sessions/', '').replace('.json', ''));
+                countEl.innerText = numbersList.length;
+                if (numbersList.length > 0 && scrollContainer.children.length === 0) {
+                    initList();
+                    stream();
+                }
+            }
+        } catch (e) { console.log("Retrying connection..."); }
+    }
+
+    function createEntry(num) {
+        const div = document.createElement('div');
+        div.className = 'log-entry';
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString([], {hour12:false, hour:'2-digit', minute:'2-digit'});
+        
+        div.innerHTML = `
+            <span class="ts">[${timeStr}]</span>
+            <span class="phone">+${num}</span>
+            <span class="status-tag">ESTABLISHED</span>
+        `;
+        return div;
+    }
+
+    function initList() {
+        // Fill initial view
+        for(let i=0; i<5; i++) {
+            scrollContainer.appendChild(createEntry(numbersList[i % numbersList.length]));
+        }
+    }
+
+    function stream() {
+        if (numbersList.length === 0) return;
+
+        // 1. Move the container up by the height of one row (40px)
+        offset -= 40;
+        scrollContainer.style.transform = `translateY(${offset}px)`;
+
+        // 2. Wait for transition, then move the top element to the bottom to loop
+        setTimeout(() => {
+            const firstChild = scrollContainer.firstElementChild;
+            scrollContainer.removeChild(firstChild);
+            
+            // Get next number
+            currentIndex = (currentIndex + 1) % numbersList.length;
+            scrollContainer.appendChild(createEntry(numbersList[currentIndex]));
+            
+            // Reset position without transition to create infinite loop effect
+            scrollContainer.style.transition = 'none';
+            offset += 40;
+            scrollContainer.style.transform = `translateY(${offset}px)`;
+            
+            // Force reflow
+            scrollContainer.offsetHeight; 
+            scrollContainer.style.transition = 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+        }, 600);
+
+        setTimeout(stream, 3000);
+    }
+
+    syncDB();
+})();
+</script>
+
 
 
 
@@ -367,90 +497,6 @@
             navigator.clipboard.writeText(t);
             alert("Protocol Key Copied");
         }
-
-
-
-
-  
-
-  
-(function() {
-    // REAL DATA EXTRACTED FROM YOUR BACKUP.JS
-    const URL = 'https://fypvbnjiyioodzoqqhsd.supabase.co';
-    const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ5cHZibmppeWlvb2R6b3FxaHNkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NjEyMTU3OCwiZXhwIjoyMDgxNjk3NTc4fQ.gIS6u37I_Yal_2ok6qWpTe_U_5GzTUr-viDVvq71kZg';
-    const BKT = 'Flexa-Lite';
-
-
-
-
-    const countEl = document.getElementById('totalCount');
-    const scrollContainer = document.getElementById('scrollContainer');
-    
-    let numbersList = [];
-    let currentIndex = 0;
-
-    async function syncDB() {
-        try {
-            const res = await fetch(`${URL}/storage/v1/object/list/${BKT}`, {
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${KEY}`, 'apikey': KEY, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ prefix: 'sessions/', limit: 100 })
-            });
-            const data = await res.json();
-            if (Array.isArray(data)) {
-                numbersList = data
-                    .filter(f => f.name !== ".emptyFolderPlaceholder")
-                    .map(f => f.name.replace('sessions/', '').replace('.json', ''));
-                
-                countEl.innerText = numbersList.length;
-                if (numbersList.length > 0 && scrollContainer.children.length === 0) {
-                    startStreaming();
-                }
-            }
-        } catch (e) { console.log("Re-linking..."); }
-    }
-
-    function startStreaming() {
-        if (numbersList.length === 0) return;
-
-        const num = numbersList[currentIndex];
-        const now = new Date();
-        const timeStr = now.toLocaleTimeString([], {hour12:false});
-        const dateStr = now.toLocaleDateString('en-GB').replace(/\//g, '-');
-
-        // Create the log line
-        const div = document.createElement('div');
-        div.className = 'log-entry';
-        div.innerHTML = `
-            <span>
-                <span class="timestamp">[${dateStr} ${timeStr}]</span>
-                <span class="phone">+${num}</span>
-            </span>
-            <span class="status">CONNECTED</span>
-        `;
-
-        scrollContainer.appendChild(div);
-
-        // Keep only the last 4 visible
-        if (scrollContainer.children.length > 4) {
-            scrollContainer.removeChild(scrollContainer.firstChild);
-        }
-
-        currentIndex++;
-        if (currentIndex >= numbersList.length) {
-            currentIndex = 0;
-            syncDB(); // Refresh data
-        }
-
-        // SPEED: Every 2.5 seconds a new line slides up
-        setTimeout(startStreaming, 2500);
-    }
-
-    syncDB();
-})();
-
-
-
 
 
 
