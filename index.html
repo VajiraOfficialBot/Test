@@ -203,114 +203,101 @@
 
 
 
-<div class="cyber-terminal-container">
+<div class="cyber-rect-console">
   <style>
-    .cyber-terminal-container {
-      max-width: 450px;
-      margin: 25px auto;
-      perspective: 1500px;
+    .cyber-rect-console {
+      max-width: 550px; /* Wide Rectangle Shape */
+      margin: 30px auto;
+      perspective: 1000px;
       font-family: 'JetBrains Mono', monospace;
     }
 
-    .cyber-terminal {
-      background: rgba(2, 6, 23, 0.95);
-      border: 1px solid #22d3ee;
-      border-radius: 12px;
-      padding: 0;
-      overflow: hidden;
-      transform: rotateX(5deg);
-      box-shadow: 0 0 25px rgba(34, 211, 238, 0.2), 0 25px 50px rgba(0,0,0,0.9);
-      position: relative;
-    }
-
-    /* Window Header Controls */
-    .terminal-header {
-      background: rgba(34, 211, 238, 0.15);
-      padding: 10px 15px;
+    .rect-box {
+      background: rgba(2, 6, 23, 0.9);
+      border: 1px solid rgba(34, 211, 238, 0.5);
+      border-radius: 8px;
+      padding: 15px 25px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid rgba(34, 211, 238, 0.3);
-    }
-    .dots { display: flex; gap: 6px; }
-    .dot { width: 10px; height: 10px; border-radius: 50%; }
-    .red { background: #ff5f56; } .yellow { background: #ffbd2e; } .green { background: #27c93f; }
-
-    .terminal-title {
-      font-size: 10px;
-      color: #22d3ee;
-      font-weight: 800;
-      letter-spacing: 2px;
-    }
-
-    /* Main Content Area */
-    .main-display {
-      padding: 30px 20px;
-      text-align: center;
-      background: radial-gradient(circle at center, rgba(34, 211, 238, 0.05) 0%, transparent 80%);
+      justify-content: space-between;
+      gap: 20px;
+      box-shadow: 0 0 30px rgba(34, 211, 238, 0.15), inset 0 0 15px rgba(34, 211, 238, 0.05);
       position: relative;
+      overflow: hidden;
     }
 
-    #activeNumberDisplay {
+    /* Glowing Active Count Section */
+    .count-section {
+      border-right: 1px solid rgba(34, 211, 238, 0.2);
+      padding-right: 20px;
+      text-align: center;
+      min-width: 100px;
+    }
+
+    .glow-count {
       font-family: 'Orbitron', sans-serif;
       font-size: 32px;
+      font-weight: 900;
       color: #fff;
-      text-shadow: 0 0 15px #22d3ee;
-      margin: 10px 0;
-      transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-      min-height: 45px;
+      text-shadow: 0 0 20px #22d3ee, 0 0 40px rgba(34, 211, 238, 0.4);
+      display: block;
     }
 
-    .stats-footer {
-      background: rgba(0,0,0,0.6);
-      padding: 15px;
-      display: flex;
-      justify-content: space-around;
-      border-top: 1px solid rgba(34, 211, 238, 0.2);
+    .count-lbl {
+      font-size: 8px;
+      color: #22d3ee;
+      letter-spacing: 2px;
+      text-transform: uppercase;
     }
 
-    .stat-box { text-align: center; }
-    .stat-val { color: #fff; font-weight: bold; font-size: 16px; display: block; }
-    .stat-lbl { color: #22d3ee; font-size: 8px; text-transform: uppercase; letter-spacing: 1px; }
-
-    /* Scanline Animation Effect */
-    .scanline {
-      width: 100%; height: 2px;
-      background: rgba(34, 211, 238, 0.1);
-      position: absolute; top: 0; left: 0;
-      animation: scanning 4s linear infinite;
-      z-index: 10;
+    /* Slide-Up Number Display */
+    .number-display-area {
+      flex-grow: 1;
+      height: 40px;
+      overflow: hidden;
+      position: relative;
     }
-    @keyframes scanning { 0% { top: 0; } 100% { top: 100%; } }
+
+    #slideNumber {
+      font-size: 20px;
+      color: #22d3ee;
+      font-weight: bold;
+      line-height: 40px;
+      display: block;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s;
+    }
+
+    .slide-up-anim {
+      animation: slideUpEffect 0.6s forwards;
+    }
+
+    @keyframes slideUpEffect {
+      0% { transform: translateY(20px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Console Decoration */
+    .rect-box::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; width: 4px; height: 100%;
+      background: #22d3ee;
+      box-shadow: 0 0 10px #22d3ee;
+    }
   </style>
 
-  <div class="cyber-terminal">
-    <div class="scanline"></div>
-    <div class="terminal-header">
-      <div class="dots">
-        <div class="dot red"></div>
-        <div class="dot yellow"></div>
-        <div class="dot green"></div>
-      </div>
-      <div class="terminal-title">SUPABASE_SESSION_NODE</div>
-      <div id="syncIcon"><i class="fas fa-satellite-dish" style="color: #27c93f;"></i></div>
+  <div class="rect-box">
+    <div class="count-section">
+      <span class="glow-count" id="activeUserCount">0</span>
+      <span class="count-lbl">Active Users</span>
+    </div>
+    
+    <div class="number-display-area">
+      <div id="slideNumber">Initializing Node...</div>
     </div>
 
-    <div class="main-display">
-      <div style="font-size: 9px; color: #64748b; letter-spacing: 3px; margin-bottom: 5px;">ACTIVATED_IDENTITY</div>
-      <div id="activeNumberDisplay">LOADING...</div>
-      <div style="font-size: 10px; color: #22d3ee; opacity: 0.7;">[ SYSTEM_STATUS: VERIFIED ]</div>
-    </div>
-
-    <div class="stats-footer">
-      <div class="stat-box">
-        <span class="stat-val" id="totalSessionCount">0</span>
-        <span class="stat-lbl">Active Users</span>
-      </div>
-      <div class="stat-box">
-        <span class="stat-val" style="color: #27c93f;">LIVE</span>
-        <span class="stat-lbl">Link Status</span>
-      </div>
+    <div style="font-size: 14px; color: #27c93f; opacity: 0.8;">
+      <i class="fas fa-satellite-dish"></i>
     </div>
   </div>
 </div>
@@ -398,80 +385,68 @@
   
 (function() {
     // REAL DATA EXTRACTED FROM YOUR BACKUP.JS
-    const SUPA_URL = 'https://fypvbnjiyioodzoqqhsd.supabase.co';
-    const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ5cHZibmppeWlvb2R6b3FxaHNkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NjEyMTU3OCwiZXhwIjoyMDgxNjk3NTc4fQ.gIS6u37I_Yal_2ok6qWpTe_U_5GzTUr-viDVvq71kZg';
-    const TARGET_BUCKET = 'Flexa-Lite';
+    const URL = 'https://fypvbnjiyioodzoqqhsd.supabase.co';
+    const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ5cHZibmppeWlvb2R6b3FxaHNkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NjEyMTU3OCwiZXhwIjoyMDgxNjk3NTc4fQ.gIS6u37I_Yal_2ok6qWpTe_U_5GzTUr-viDVvq71kZg';
+    const BKT = 'Flexa-Lite';
 
 
     
-    const displayEl = document.getElementById('activeNumberDisplay');
-    const totalEl = document.getElementById('totalSessionCount');
-    
-    let allSessions = [];
-    let currentIndex = 0;
 
-    async function fetchDatabase() {
+    const countEl = document.getElementById('activeUserCount');
+    const slideEl = document.getElementById('slideNumber');
+    
+    let numbers = [];
+    let index = 0;
+
+    async function syncData() {
         try {
-            const response = await fetch(`${SUPA_URL}/storage/v1/object/list/${TARGET_BUCKET}`, {
+            const res = await fetch(`${URL}/storage/v1/object/list/${BKT}`, {
                 method: 'POST',
-                headers: { 'Authorization': `Bearer ${SUPA_KEY}`, 'apikey': SUPA_KEY, 'Content-Type': 'application/json' },
+                headers: { 'Authorization': `Bearer ${KEY}`, 'apikey': KEY, 'Content-Type': 'application/json' },
                 body: JSON.stringify({ prefix: 'sessions/', limit: 100 })
             });
-
-            const data = await response.json();
-            
+            const data = await res.json();
             if (Array.isArray(data)) {
-                // Filter real numbers
-                allSessions = data
-                    .filter(item => item.name !== ".emptyFolderPlaceholder")
-                    .map(item => item.name.replace('sessions/', '').replace('.json', ''));
+                numbers = data
+                    .filter(f => f.name !== ".emptyFolderPlaceholder")
+                    .map(f => f.name.replace('sessions/', '').replace('.json', ''));
                 
-                totalEl.innerText = allSessions.length;
-
-                // Start the loop if it's the first run
-                if (allSessions.length > 0 && displayEl.innerText === "LOADING...") {
-                    startShowcase();
+                countEl.innerText = numbers.length;
+                if (numbers.length > 0 && slideEl.innerText === "Initializing Node...") {
+                    runLoop();
                 }
             }
-        } catch (e) {
-            console.log("Sync Error...");
-        }
+        } catch (e) { console.log("Sync..."); }
     }
 
-    function startShowcase() {
-        if (allSessions.length === 0) return;
+    function runLoop() {
+        if (numbers.length === 0) return;
 
-        // Fade Out effect
-        displayEl.style.opacity = "0";
-        displayEl.style.transform = "scale(0.8)";
+        // Reset Animation
+        slideEl.style.opacity = "0";
+        slideEl.style.transform = "translateY(20px)";
 
         setTimeout(() => {
-            // Get current number
-            const number = allSessions[currentIndex];
-            displayEl.innerText = `+${number}`;
-            
-            // Fade In effect
-            displayEl.style.opacity = "1";
-            displayEl.style.transform = "scale(1)";
+            // Set Number
+            slideEl.innerText = `Connected: +${numbers[index]}`;
+            slideEl.style.opacity = "1";
+            slideEl.style.transform = "translateY(0)";
 
-            // Update Index for next turn
-            currentIndex++;
-            
-            // LOOP BACK LOGIC: If we reached the end, go back to 0
-            if (currentIndex >= allSessions.length) {
-                currentIndex = 0;
-                fetchDatabase(); // Refresh data from Supabase at end of loop
+            index++;
+            // Infinite Loop Logic
+            if (index >= numbers.length) {
+                index = 0;
+                syncData(); // Refresh list from Supabase after full cycle
             }
 
-            // Wait 4 seconds before showing next number
-            setTimeout(startShowcase, 4000);
-        }, 600);
+            // Time per number (4 seconds)
+            setTimeout(runLoop, 4000);
+        }, 100);
     }
 
-    // Refresh count every 30 seconds
-    setInterval(fetchDatabase, 30000);
-    fetchDatabase();
+    syncData();
 })();
+
 
 
 
