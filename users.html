@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flexa Lite - User Dashboard</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+:root{
+    --bg:#020617;
+    --card:#0f172a;
+    --accent:#22d3ee;
+    --green:#22c55e;
+    --red:#ef4444;
+}
+
+body{
+    margin:0;
+    background:var(--bg);
+    color:white;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.header{
+    padding:20px 40px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:1px solid #1e293b;
+}
+
+.header h1{
+    font-size:20px;
+    letter-spacing:3px;
+    color:var(--accent);
+}
+
+.back-btn{
+    background:transparent;
+    border:1px solid var(--accent);
+    color:var(--accent);
+    padding:8px 15px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.dashboard{
+    padding:40px;
+}
+
+.stats{
+    display:flex;
+    gap:20px;
+    margin-bottom:30px;
+}
+
+.stat-box{
+    flex:1;
+    background:var(--card);
+    padding:25px;
+    border-radius:15px;
+    text-align:center;
+    border:1px solid #1e293b;
+}
+
+.stat-box h2{
+    font-size:35px;
+    margin:0;
+}
+
+.stat-box span{
+    font-size:12px;
+    letter-spacing:2px;
+    color:#94a3b8;
+}
+
+.user-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+    gap:20px;
+}
+
+.user-card{
+    background:var(--card);
+    padding:20px;
+    border-radius:15px;
+    border:1px solid #1e293b;
+    transition:0.3s;
+}
+
+.user-card:hover{
+    transform:translateY(-5px);
+    border-color:var(--accent);
+}
+
+.user-card h3{
+    margin:0 0 10px;
+    font-size:16px;
+}
+
+.status{
+    font-weight:bold;
+    font-size:13px;
+}
+
+.active{
+    color:var(--green);
+}
+
+.deactive{
+    color:var(--red);
+}
+
+.logout-btn{
+    margin-top:15px;
+    padding:6px 10px;
+    border:none;
+    border-radius:6px;
+    background:var(--red);
+    color:white;
+    cursor:pointer;
+    font-size:12px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>USER MANAGEMENT</h1>
+    <button class="back-btn" onclick="goBack()">← Back</button>
+</div>
+
+<div class="dashboard">
+    <div class="stats">
+        <div class="stat-box">
+            <h2 id="totalUsers">0</h2>
+            <span>TOTAL USERS</span>
+        </div>
+        <div class="stat-box">
+            <h2 id="activeUsers">0</h2>
+            <span>ACTIVE USERS</span>
+        </div>
+        <div class="stat-box">
+            <h2 id="deactiveUsers">0</h2>
+            <span>DEACTIVE USERS</span>
+        </div>
+    </div>
+
+    <div class="user-grid" id="userGrid"></div>
+</div>
+
+<script>
+const DB_KEY = "flexa_users";
+
+function goBack(){
+    window.location.href = "index.html";
+}
+
+function loadUsers(){
+    const users = JSON.parse(localStorage.getItem(DB_KEY)) || [];
+    const grid = document.getElementById("userGrid");
+
+    grid.innerHTML = "";
+
+    let activeCount = 0;
+    let deactiveCount = 0;
+
+    users.forEach(user=>{
+        if(user.status === "active") activeCount++;
+        else deactiveCount++;
+
+        const card = document.createElement("div");
+        card.className = "user-card";
+
+        card.innerHTML = `
+            <h3><i class="fas fa-user"></i> ${user.number}</h3>
+            <p class="status ${user.status === "active" ? "active":"deactive"}">
+                ${user.status === "active" ? "🟢 ACTIVE":"🔴 DEACTIVE"}
+            </p>
+            <p style="font-size:12px;color:#94a3b8;">
+                Last Login: ${user.lastLogin || "-"}
+            </p>
+            <button class="logout-btn" onclick="logoutUser('${user.number}')">
+                Force Logout
+            </button>
+        `;
+        grid.appendChild(card);
+    });
+
+    document.getElementById("totalUsers").innerText = users.length;
+    document.getElementById("activeUsers").innerText = activeCount;
+    document.getElementById("deactiveUsers").innerText = deactiveCount;
+}
+
+function logoutUser(number){
+    let users = JSON.parse(localStorage.getItem(DB_KEY)) || [];
+    const user = users.find(u=>u.number===number);
+    if(user) user.status = "deactive";
+    localStorage.setItem(DB_KEY, JSON.stringify(users));
+    loadUsers();
+}
+
+loadUsers();
+</script>
+
+</body>
+</html>
