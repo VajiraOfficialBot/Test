@@ -610,9 +610,136 @@
 
         @keyframes zoom { from { transform: scale(0.5); opacity: 0; } }
         .hidden { display: none; }
+
+
+
+
+
+
+
+/* ========== SIDEBAR ========== */
+
+#menuToggle {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    font-size: 22px;
+    cursor: pointer;
+    z-index: 999;
+    color: var(--accent);
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -260px;
+    width: 250px;
+    height: 100%;
+    background: #0f172a;
+    border-right: 1px solid var(--border);
+    padding: 20px;
+    transition: 0.4s ease;
+    z-index: 998;
+}
+
+.sidebar.active {
+    left: 0;
+}
+
+.sidebar h3 {
+    margin-bottom: 20px;
+    color: var(--accent);
+}
+
+.sidebar button {
+    width: 100%;
+    padding: 10px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: white;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.sidebar button:hover {
+    background: var(--accent);
+    color: #000;
+}
+
+/* ========== USER PANEL ========== */
+
+.user-panel {
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 400px;
+    height: 100%;
+    background: #020617;
+    padding: 20px;
+    overflow-y: auto;
+    transition: 0.4s ease;
+    border-left: 1px solid var(--border);
+    z-index: 997;
+}
+
+.user-panel.hidden {
+    right: -420px;
+}
+
+.user-card {
+    background: rgba(15,23,42,0.8);
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+}
+
+.user-card h4 {
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.status-active {
+    color: #22c55e;
+    font-weight: bold;
+}
+
+.status-deactive {
+    color: #ef4444;
+    font-weight: bold;
+}
+
+
+
+
+
+        
     </style>
 </head>
 <body>
+
+
+
+
+<!-- MENU BUTTON -->
+<div id="menuToggle" onclick="toggleSidebar()">
+    <i class="fas fa-bars"></i>
+</div>
+
+<!-- SIDEBAR -->
+<div id="sidebar" class="sidebar">
+    <h3>CONTROL PANEL</h3>
+    <button onclick="showUserPanel()">User Details</button>
+</div>
+
+<!-- USER PANEL -->
+<div id="userPanel" class="user-panel hidden">
+    <h2>CONNECTED USERS</h2>
+    <div id="userList"></div>
+</div>
+
+
+    
 
     <div class="page-header">
         <h1>FLEXA LITE</h1>
@@ -1093,6 +1220,89 @@ function showModule(moduleId) {
     document.getElementById(moduleId).classList.add('active');
     event.currentTarget.classList.add('active');
 }
+
+
+
+
+
+/* ===============================
+   USER SESSION STORAGE SYSTEM
+================================= */
+
+const USER_DB_KEY = "flexa_users";
+
+function toggleSidebar() {
+    document.getElementById("sidebar").classList.toggle("active");
+}
+
+function showUserPanel() {
+    document.getElementById("userPanel").classList.toggle("hidden");
+    loadUsers();
+}
+
+/* ===== SAVE USER AFTER CONNECT ===== */
+
+function saveUserSession(number, credsData) {
+    let users = JSON.parse(localStorage.getItem(USER_DB_KEY)) || [];
+
+    const existing = users.find(u => u.number === number);
+
+    if (!existing) {
+        users.push({
+            number: number,
+            creds: credsData,
+            status: "active",
+            lastLogin: new Date().toLocaleString()
+        });
+    } else {
+        existing.status = "active";
+        existing.lastLogin = new Date().toLocaleString();
+    }
+
+    localStorage.setItem(USER_DB_KEY, JSON.stringify(users));
+    loadUsers();
+}
+
+/* ===== LOGOUT USER ===== */
+
+function logoutUser(number) {
+    let users = JSON.parse(localStorage.getItem(USER_DB_KEY)) || [];
+    const user = users.find(u => u.number === number);
+    if (user) user.status = "deactive";
+    localStorage.setItem(USER_DB_KEY, JSON.stringify(users));
+    loadUsers();
+}
+
+/* ===== DISPLAY USERS ===== */
+
+function loadUsers() {
+    const list = document.getElementById("userList");
+    list.innerHTML = "";
+
+    let users = JSON.parse(localStorage.getItem(USER_DB_KEY)) || [];
+
+    users.forEach(user => {
+        const card = document.createElement("div");
+        card.className = "user-card";
+
+        card.innerHTML = `
+            <h4>${user.number}</h4>
+            <p>Status: 
+                <span class="${user.status === 'active' ? 'status-active' : 'status-deactive'}">
+                    ${user.status === 'active' ? '🟢 ACTIVE' : '🔴 DEACTIVE'}
+                </span>
+            </p>
+            <p>Last Login: ${user.lastLogin}</p>
+            <button onclick="logoutUser('${user.number}')" style="margin-top:10px;padding:6px;border:none;border-radius:6px;background:#ef4444;color:white;cursor:pointer;">
+                Force Logout
+            </button>
+        `;
+
+        list.appendChild(card);
+    });
+}
+
+
 
 
         
